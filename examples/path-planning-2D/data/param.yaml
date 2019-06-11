@@ -1,0 +1,49 @@
+%YAML:1.2
+---
+RRT:
+  max_sampling_num:   1000
+  goal_sampling_rate: 0.25
+  expand_dist:        50.0
+
+RRTStar:
+  max_sampling_num:   1000
+  goal_sampling_rate: 0.05
+  expand_dist:        100.0
+  R:                  1000
+
+StartState:
+  x: 100.0
+  y: 50.0
+
+GoalState:
+  x: 900.0
+  y: 950.0
+
+WorldSize:
+  x: 1000.0
+  y: 1000.0
+
+ConstraintImage: "./constraint0.png"
+
+Obstacles:
+  num: 5
+  Obstacle0:
+    x:      500.0
+    y:      900.0
+    radius: 10.0
+  Obstacle1:
+    x:      700.0
+    y:      10.0
+    radius: 200.0
+  Obstacle2:
+    x:      500.0
+    y:      500.0
+    radius: 300.0
+  Obstacle3:
+    x:      100.0
+    y:      500.0
+    radius: 100.0
+  Obstacle4:
+    x:      900.0
+    y:      800.0
+    radius: 50.0
