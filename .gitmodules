@@ -1,0 +1,3 @@
+[submodule "examples/external/OpenCV-YAMLHelper"]
+	path = examples/external/OpenCV-YAMLHelper
+	url = git@github.com:kyk0910/OpenCV-YAMLHelper.git
