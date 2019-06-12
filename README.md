@@ -98,12 +98,8 @@ planner::SemanticSegmentConstraint constraint(space, constraint_map, each_dim_si
 
 ### 4. Solve
 ``` c++
-// definition of planner (you can set some parameters)
-planner::RRTStar planner(DIM,
-                         max_sampling_num,
-                         goal_sampling_rate,
-                         expand_dist,
-                         R);
+// definition of planner (you can set some parameters at optional argument)
+planner::RRTStar planner(DIM);
 
 // set constraint
 planner.setProblemDefinition(constraint);
@@ -111,7 +107,7 @@ planner.setProblemDefinition(constraint);
 // solve
 bool status = planner.solve;
 if(status) {
-    auto result = planner.getResultRef();
+    auto result = planner.getResult();
     for(const auto& r : result) {
         std::cout << r << std::endl;
     }
