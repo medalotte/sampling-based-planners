@@ -48,7 +48,7 @@ $ make
 #include <planner.h>
 ```
 
-### 2. Difine target euclidean space
+### 2. Define euclidean space
 ``` c++
 // difinition of two-dimensional space
 const int DIM = 2;
@@ -96,7 +96,7 @@ std::vector<uint32_t> each_dim_size{(uint32_t)world.cols, (uint32_t)world.rows};
 planner::SemanticSegmentConstraint constraint(space, constraint_map, each_dim_size);
 ```
 
-### 4. Solve path planning
+### 4. Solve
 ``` c++
 // definition of planner (you can set some parameters)
 planner::RRTStar planner(DIM,
