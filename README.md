@@ -82,12 +82,12 @@ auto constraint = std::make_shared<pln::PointCloudConstraint>(space, obstacles)
 auto world = cv::imread("./example.png", CV_8UC1);
 
 // definition of constraint array
-std::vector<pln::ConstraintType> constraint_map(world.cols * world.rows,
-                                                pln::ConstraintType::ENTAERABLE);
+std::vector<pln::ConstraintType> map(world.cols * world.rows, pln::ConstraintType::ENTAERABLE);
+
 for(int yi = 0; yi < world.rows; yi++) {
     for(int xi = 0; xi < world.cols; xi++) {
         if(world.data[xi + yi * world.cols] != 255) {
-            constraint_map[xi + yi * world.cols] = pln::ConstraintType::NOENTRY;
+            map[xi + yi * world.cols] = pln::ConstraintType::NOENTRY;
         }
     }
 }
@@ -95,7 +95,7 @@ for(int yi = 0; yi < world.rows; yi++) {
 std::vector<uint32_t> each_dim_size{(uint32_t)world.cols, (uint32_t)world.rows};
 
 // definition of constraint using std::shared_ptr
-auto constraint = std::make_shared<pln::SemanticSegmentConstraint>(space, constraint_map, each_dim_size);
+auto constraint = std::make_shared<pln::SemanticSegmentConstraint>(space, map, each_dim_size);
 ```
 
 ### 4. Solve
