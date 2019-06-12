@@ -67,8 +67,9 @@ space.setBound(bounds);
 ``` c++
 // definition of obstacle (point cloud type)
 std::vector<planner::PointCloudConstraint::Hypersphere> obstacles;
-obstacles.emplace_back(planner::State(5.0,  20.0), 10.0); // x : 5.0,  y : 20.0, radius : 10.0
-obstacles.emplace_back(planner::State(50.0, 80.0), 30.0); // x : 50.0, y : 80.0, radius : 30.0
+obstacles.emplace_back(planner::State(10.0, 20.0),  10.0);  // x : 10.0, y : 20.0, radius : 10.0
+obstacles.emplace_back(planner::State(50.0, 70.0),  20.0);  // x : 50.0, y : 70.0, radius : 20.0
+obstacles.emplace_back(planner::State(-10.0, 120.0), 30.0); // there is no probrem out of range
 
 // definition of constraint
 planner::PointCloudConstraint constraint(space, obstacles);
@@ -104,8 +105,12 @@ planner::RRTStar planner(DIM);
 // set constraint
 planner.setProblemDefinition(constraint);
 
+// definition of start and goal state
+planner::State start(5.0, 5.0)
+planner::State goal(90.0, 90.0)
+
 // solve
-bool status = planner.solve();
+bool status = planner.solve(start, goal);
 if(status) {
     auto result = planner.getResult();
     for(const auto& r : result) {
