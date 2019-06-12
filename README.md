@@ -24,9 +24,8 @@ If you would like to compile the example programs, add the following:
 The shared library (**libplanner.so**) can be build with following commands
 
 ``` sh
-$ cd <specific directory(no problem anywhere)>
 $ git clone git@github.com:kyk0910/sampling-based-planners.git
-$ cd <specific directory>/sampling-based-planners/lib
+$ cd sampling-based-planners/lib
 $ mkdir build && cd build
 $ cmake ..
 $ make
@@ -36,9 +35,9 @@ $ make
 The example program can be run with following commands after build the shared library
 
 ``` sh
-$ cd <specific directory>/sampling-based-planners
+$ cd <top of this repository>
 $ git submodule update --init
-$ cd <specific directory>/sampling-based-planners/examples/<example program directory>
+$ cd examples/<example program directory>
 $ mkdir build && cd build
 $ cmake ..
 $ make
