@@ -32,6 +32,10 @@
 #include <cmath>
 
 namespace planner {
+
+    /**
+     *  Express state on multidimensional
+     */
     class State {
     public:
         std::vector<double> vals;

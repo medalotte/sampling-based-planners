@@ -31,6 +31,10 @@
 #include <cstdint>
 
 namespace planner {
+
+    /**
+     *  Express bound in euclidean space
+     */
     class Bound {
     public:
         double low;
@@ -47,9 +51,11 @@ namespace planner {
         double getRange() const;
     };
 
+    /**
+     *  Express euclidean space
+     */
     class EuclideanSpace {
     public:
-        EuclideanSpace() = default;
         EuclideanSpace(const uint32_t& dim);
 
         EuclideanSpace(const EuclideanSpace& obj);
@@ -62,6 +68,8 @@ namespace planner {
         void setBound(std::vector<Bound>& bounds);
 
         Bound getBound(const uint32_t& dim) const;
+
+        const std::vector<Bound>& getBoundsRef() const;
 
     private:
         uint32_t dim_;

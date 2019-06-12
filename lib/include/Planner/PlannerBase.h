@@ -32,6 +32,10 @@
 
 namespace planner {
     namespace base {
+
+        /**
+         *  Base class of planners which are sampling-based method
+         */
         class PlannerBase {
         public:
             PlannerBase(uint32_t dim);
@@ -41,9 +45,10 @@ namespace planner {
             PlannerBase &operator =(const PlannerBase& obj) = delete;
 
             /**
-             *  パスプランニングを実行する
-             *  @start:         開始状態
-             *  @goal:          終了状態
+             *  Execute path planning
+             *  @start:  start state
+             *  @goal:   goal state
+             *  @Return: whether the path planning was successful
              */
             virtual bool solve(const State& start,
                                const State& goal) = 0;

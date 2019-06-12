@@ -28,7 +28,8 @@ namespace planner {
 
     State::State(uint32_t dim) {
         if(dim == 0) {
-            throw std::runtime_error("[" + std::string(__PRETTY_FUNCTION__) + "] Can not set zero-dimension state");
+            throw std::runtime_error("[" + std::string(__PRETTY_FUNCTION__) + "] " +
+                                     "Can not set zero-dimension state");
         }
 
         vals = std::vector<double>(dim);
@@ -36,7 +37,8 @@ namespace planner {
 
     State::State(const std::vector<double>& _vals) {
         if(_vals.size() == 0) {
-            throw std::runtime_error("[" + std::string(__PRETTY_FUNCTION__) + "] Can not set zero-dimension state");
+            throw std::runtime_error("[" + std::string(__PRETTY_FUNCTION__) + "] " +
+                                     "Can not set zero-dimension state");
         }
 
         vals = _vals;

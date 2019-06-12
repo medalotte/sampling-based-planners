@@ -33,9 +33,28 @@
 #include <Constraint/ConstraintBase.h>
 
 namespace planner {
+
+    /**
+     *  Super class of planner::ConstraintBase
+     *  This class express constraint as like an image or multidimensional array
+     *  and nomalize automatically for space size when call checkConstraintType()
+     */
     class SemanticSegmentConstraint : public base::ConstraintBase {
     public:
+
+        /**
+         *  Constructor(SemanticSegmentConstraint)
+         *  @space: target space
+         */
         SemanticSegmentConstraint(const EuclideanSpace& space);
+
+        /**
+         *  Constructor(SemanticSegmentConstraint)
+         *  @space:         target space
+         *  @constraint:    multidimensional array express as one dimensional array
+         *                  (e.g. '(x, y)' -> 'x + y * x_size' where 2 dimensions)
+         *  @each_dim_size: each dimension size of constraint you set
+         */
         SemanticSegmentConstraint(const EuclideanSpace&              space,
                                   const std::vector<ConstraintType>& constraint,
                                   const std::vector<uint32_t>&       each_dim_size);
@@ -44,7 +63,6 @@ namespace planner {
 
         void set(const std::vector<ConstraintType>& constraint,
                  const std::vector<uint32_t>&       each_dim_size);
-
 
         const std::vector<ConstraintType>& getConstraintRef() const;
 

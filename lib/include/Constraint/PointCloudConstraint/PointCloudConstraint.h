@@ -29,12 +29,36 @@
 #include <Constraint/ConstraintBase.h>
 
 namespace planner {
+
+    /**
+     *  Super class of planner::ConstraintBase
+     *  This class express constraint as set of hypersphere
+     */
     class PointCloudConstraint : public base::ConstraintBase {
     public:
+
+        /**
+         *  Hypersphere as a way of expressing of Obstacle
+         */
         class Hypersphere {
         public:
+            /**
+             *  Constructor(Hypersphere)
+             *  state and radius are initialize to zero
+             */
             Hypersphere();
+
+            /**
+             *  Constructor(Hypersphere)
+             *  @state:  center of hypersphere
+             *  @radius: radius of hypersphere
+             *           (normalize to a positive decimal)
+             */
             Hypersphere(const State& state, const double& radius);
+
+            /**
+             *  setter and getter function
+             */
             void set(const State& state, const double& radius);
             void setState(const State& state);
             void setRadius(const double& radius);
@@ -45,13 +69,25 @@ namespace planner {
             double radius_;
         };
 
+        /**
+         *  Constructor(PointCloudConstraint)
+         *  @space: target space
+         */
         PointCloudConstraint(const EuclideanSpace& space);
+
+        /**
+         *  Constructor(PointCloudConstraint)
+         *  @space:      target space
+         *  @constraint: constraint that express set of hypersphere
+         *               if dimension of hypersphere different from dimension of space,
+         *               this constructor throw std::runtime_error
+         */
         PointCloudConstraint(const EuclideanSpace&           space,
                              const std::vector<Hypersphere>& constraint);
 
         ~PointCloudConstraint() override;
 
-        void set(const std::vector<Hypersphere>& _data);
+        void set(const std::vector<Hypersphere>& constraint);
 
         const std::vector<Hypersphere>& getRef() const;
 

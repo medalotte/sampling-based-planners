@@ -56,11 +56,11 @@ namespace planner {
     }
 
     bool RRT::solve(const State& start, const State& goal) {
-        // 乱数生成器を定義
+        // definition of random device
         std::random_device rand_dev;
         std::default_random_engine rand(rand_dev());
 
-        // 状態空間における乱数生成の制約を定義
+        // definition of constraint of generating random value in euclidean space
         std::vector<std::uniform_real_distribution<double>> rand_restrictions;
         for(size_t di = 1; di <= constraint_->space.getDim(); di++) {
             auto restriction = std::uniform_real_distribution<>(constraint_->space.getBound(di).low,
@@ -68,41 +68,39 @@ namespace planner {
             rand_restrictions.push_back(restriction);
         }
 
-        // 目標状態を一定確率でサンプリングするために使用する乱数生成器の制約を定義
+        // definition of random device in order to sample goal state with a certain probability
         auto sample_restriction = std::uniform_real_distribution<>(0, 1.0);
 
-        // ノードの集合を定義する
+        // definition of set of node
         std::vector<std::shared_ptr<Node>> node_list;
         node_list.push_back(std::shared_ptr<Node>(new Node{start, nullptr}));
 
+        // sampling on euclidean space
         uint32_t sampling_cnt = 0;
         while(true) {
-            // 状態空間においてノードのランダムサンプリングを行う
-            // 一定確率で目標状態をサンプリングする
             std::shared_ptr<Node> rand_node(new Node{goal, nullptr});
             if(goal_sampling_rate_ < sample_restriction(rand)) {
                 for(size_t i = 0; i < constraint_->space.getDim(); i++) {
                     rand_node->state.vals[i] = rand_restrictions[i](rand);
                 }
 
-                // 制約を満たさない場合はサンプリングをやり直す
+                // resample when node do not meet constraint
                 if(constraint_->checkConstraintType(rand_node->state) == ConstraintType::NOENTRY) {
                     continue;
                 }
             }
 
-            // ユークリッド距離が最も近いノードのindexを取得
+            // get index of node that nearest node from sampling node
             size_t nearest_node_index = getNearestNodeIndex(rand_node, node_list);
 
-            // 新たなノードを生成
+            // generate new node
             auto new_node = generateSteerNode(node_list[nearest_node_index], rand_node, expand_dist_);
 
-            // 地図上で制約を満たしている場合、リストにノードを追加する
+            // add to list if new node meets constraint
             if(checkCollision(node_list[nearest_node_index], new_node)) {
-                // リストにノードを追加
                 node_list.push_back(new_node);
 
-                // 目標状態との距離がexpand_dist以下であればパスの生成を終了
+                // terminate processing if distance between new node and goal state is less than 'expand_dist'
                 if(new_node->state.distanceFrom(goal) <= expand_dist_) {
                     new_node         = std::shared_ptr<Node>(new Node{goal, nullptr});
                     new_node->parent = node_list.back();
@@ -117,10 +115,8 @@ namespace planner {
             }
         }
 
-        // 結果を格納するvertorを初期化
+        // store the result
         result_.clear();
-
-        // パス生成の結果を取得する
         auto result_node = node_list.back();
         while(true) {
             auto result_begin_itr = result_.begin();

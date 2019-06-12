@@ -107,4 +107,8 @@ namespace planner {
         }
         return bounds_[dim - 1];
     }
+
+    const std::vector<Bound>& EuclideanSpace::getBoundsRef() const {
+        return bounds_;
+    }
 }

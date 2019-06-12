@@ -62,27 +62,77 @@ namespace planner {
         double   expand_dist_;
         double   R_;
 
+        /**
+         *  Get index that nearest node from target node in 'node_list'
+         *  @target_node: target node
+         *  @node_list:   list that contein existing node
+         *  @Return:      index of nearest node in 'node_list'
+         */
         size_t getNearestNodeIndex(const std::shared_ptr<Node>& target_node,
                                    const std::vector<std::shared_ptr<Node>>& node_list) const;
 
+        /**
+         *  Generate Steered node that is 'expand_dist' away from 'src_node' to 'dst_node' direction
+         *  @src_node:    source node
+         *  @dst_node:    destination node
+         *  @expand_dist: distance from 'src_node' of steered node
+         *  @Return:      steered node
+         */
         std::shared_ptr<Node> generateSteerNode(const std::shared_ptr<Node>& src_node,
                                                 const std::shared_ptr<Node>& dst_node,
-                                                const double& expand_dist) const;
+                                                const double&                expand_dist) const;
 
+        /**
+         *  Check a constraint between 'src_node' and 'dst_node'
+         *  @src_node: source node
+         *  @dst_node: destination node
+         *  @Return:   If the path of between 'src_node' and 'dst_node' entry ConstraintType::NOENTRY,
+         *             return false
+         */
         bool checkCollision(const std::shared_ptr<Node>& src_node,
                             const std::shared_ptr<Node>& dst_node) const;
 
-        std::vector<size_t> findNearNodes(const std::shared_ptr<Node>&              new_node,
+        /**
+         *  Find near nodes in 'node_list'
+         *  Near nodes are definition as formula using target dimension and number of total node
+         *  @target_node: target node
+         *  @node_list:   list that contein existing node
+         *  @Return:      set of indexes that are near 'target_node' in 'node_list'
+         */
+        std::vector<size_t> findNearNodes(const std::shared_ptr<Node>&              target_node,
                                           const std::vector<std::shared_ptr<Node>>& node_list) const;
 
-        std::shared_ptr<Node> chooseParentNode(const std::shared_ptr<Node>&              new_node,
+        /**
+         *  Choose parent node from near node that find in findNearNodes()
+         *  @target_node:       target node
+         *  @node_list:         list that contein existing node
+         *  @near_node_indexes: return value of findNearNodes()
+         *  @Return: node that choosed new parent node
+         */
+        std::shared_ptr<Node> chooseParentNode(const std::shared_ptr<Node>&              target_node,
                                                const std::vector<std::shared_ptr<Node>>& node_list,
                                                const std::vector<size_t>&                near_node_indexes) const;
 
+        /**
+         *  redefine parent node of near node that find in findNearNodes()
+         *  @node_list:         list that contein existing node
+         *  @near_node_indexes: return value of findNearNodes()
+         *  @Return:            void
+         */
         void rewireNearNodes(std::vector<std::shared_ptr<Node>>& node_list,
                              const std::vector<size_t>&          near_node_indexes) const;
 
-        int getBestNodeIndex(const State& target_node,
+        /**
+         *  get most low cost node in 'node_list' within 'radius' from 'target_state'
+         *  @target_state: target state
+         *  @radius:       radius
+         *  @node_list:    list that contein existing node
+         *  @Return:       index of most low cost node in 'node_list'
+         *                 If do NOT exist node in 'node_list' within 'radius',
+         *                 return -1
+         */
+        int getBestNodeIndex(const State&                              target_state,
+                             const double&                             radius,
                              const std::vector<std::shared_ptr<Node>>& node_list) const;
     };
 }

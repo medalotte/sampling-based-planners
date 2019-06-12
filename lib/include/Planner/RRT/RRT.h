@@ -58,13 +58,33 @@ namespace planner {
         double   goal_sampling_rate_;
         double   expand_dist_;
 
-        size_t getNearestNodeIndex(const std::shared_ptr<Node>& target_node,
+        /**
+         *  Get index that nearest node from target node in 'node_list'
+         *  @target_node: target node
+         *  @node_list:   list that contein existing node
+         *  @Return:      index of nearest node in 'node_list'
+         */
+        size_t getNearestNodeIndex(const std::shared_ptr<Node>&              target_node,
                                    const std::vector<std::shared_ptr<Node>>& node_list) const;
 
+        /**
+         *  Generate Steered node that is 'expand_dist' away from 'src_node' to 'dst_node' direction
+         *  @src_node:    source node
+         *  @dst_node:    destination node
+         *  @expand_dist: distance from 'src_node' of steered node
+         *  @Return:      steered node
+         */
         std::shared_ptr<Node> generateSteerNode(const std::shared_ptr<Node>& src_node,
                                                 const std::shared_ptr<Node>& dst_node,
-                                                const double& expand_dist) const;
+                                                const double&                expand_dist) const;
 
+        /**
+         *  Check a constraint between 'src_node' and 'dst_node'
+         *  @src_node: source node
+         *  @dst_node: destination node
+         *  @Return:   If the path of between 'src_node' and 'dst_node' entry ConstraintType::NOENTRY,
+         *             return false
+         */
         bool checkCollision(const std::shared_ptr<Node>& src_node,
                             const std::shared_ptr<Node>& dst_node) const;
     };

@@ -31,21 +31,38 @@
 #include <State/State.h>
 
 namespace planner {
+
+    /**
+     *  definition of type of constraint
+     */
     enum class ConstraintType {
         NOENTRY,
         ENTAERABLE
     };
 
     namespace base {
+
+        /**
+         *  Base class of constraint for planner
+         */
         class ConstraintBase {
         public:
             EuclideanSpace space;
 
+            /**
+             *  Constructor(ConstraintBase)
+             *  @space: target space
+             */
             ConstraintBase(const EuclideanSpace& _space);
             virtual ~ConstraintBase();
 
             uint32_t getDim() const;
 
+            /**
+             *  Check constraint at given state
+             *  @state: target state
+             *  @Return: type of constraint at target state
+             */
             virtual ConstraintType checkConstraintType(const State& state) const;
         };
     }

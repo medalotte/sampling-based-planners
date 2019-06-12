@@ -62,11 +62,11 @@ namespace planner {
     }
 
     bool RRTStar::solve(const State& start, const State& goal) {
-        // 乱数生成器を定義
+        // definition of random device
         std::random_device rand_dev;
         std::minstd_rand rand(static_cast<unsigned int>(rand_dev()));
 
-        // 状態空間における乱数生成の制約を定義
+        // definition of constraint of generating random value in euclidean space
         std::vector<std::uniform_real_distribution<double>> rand_restrictions;
         for(size_t di = 1; di <= constraint_->space.getDim(); di++) {
             auto restriction = std::uniform_real_distribution<>(constraint_->space.getBound(di).low,
@@ -74,55 +74,53 @@ namespace planner {
             rand_restrictions.push_back(restriction);
         }
 
-        // 目標状態を一定確率でサンプリングするために使用する乱数生成器の制約を定義
+        // definition of random device in order to sample goal state with a certain probability
         auto sample_restriction = std::uniform_real_distribution<>(0, 1.0);
 
-        // ノードの集合を定義する
+        // definition of set of node
         std::vector<std::shared_ptr<Node>> node_list;
         node_list.push_back(std::shared_ptr<Node>(new Node{start, nullptr, 0}));
 
+        // sampling on euclidean space
         for(size_t i = 0; i < max_sampling_num_; i++) {
-            // 状態空間においてノードのランダムサンプリングを行う
-            // 一定確率で目標状態をサンプリングする
             std::shared_ptr<Node> rand_node(new Node{goal, nullptr, 0});
             if(goal_sampling_rate_ < sample_restriction(rand)) {
                 for(size_t i = 0; i < constraint_->space.getDim(); i++) {
                     rand_node->state.vals[i] = rand_restrictions[i](rand);
                 }
 
-                // 制約を満たさない場合はサンプリングをやり直す
+                // resample when node do not meet constraint
                 if(constraint_->checkConstraintType(rand_node->state) == ConstraintType::NOENTRY) {
                     continue;
                 }
             }
 
-            // ユークリッド距離が最も近いノードのindexを取得
+            // get index of node that nearest node from sampling node
             size_t nearest_node_index = getNearestNodeIndex(rand_node, node_list);
 
-            // 新たなノードを生成
+            // generate new node
             auto new_node = generateSteerNode(node_list[nearest_node_index], rand_node, expand_dist_);
 
-            // 地図上で制約を満たしている場合、リストにノードを追加する
+            // add to list if new node meets constraint
             if(checkCollision(node_list[nearest_node_index], new_node)) {
-                // 式によって定義される距離の内にあるノードを探索する
+                // Find near nodes that are definition as formula using target dimension and number of total node
                 auto near_node_indexes = findNearNodes(new_node, node_list);
 
-                // 制約を満たし、最もコストが小さくなるノードを探索し、再連結する
+                // Choose parent node from near node
                 new_node = chooseParentNode(new_node, node_list, near_node_indexes);
 
-                // リストにノードを追加
+                // add node to list
                 node_list.push_back(new_node);
 
-                // 近隣のノードの再連結を行う
+                // redefine parent node of near node
                 rewireNearNodes(node_list, near_node_indexes);
             }
         }
 
-        // 結果を格納するvertorを初期化
         result_.clear();
 
-        // 目標状態付近に到達したノードの中で、最もコストが低いノードを取得する
-        int best_last_index = getBestNodeIndex(goal, node_list);
+        // store the result
+        int best_last_index = getBestNodeIndex(goal, expand_dist_, node_list);
         if(best_last_index < 0) {
             return false;
         }
@@ -209,7 +207,7 @@ namespace planner {
         return true;
     }
 
-    std::vector<size_t> RRTStar::findNearNodes(const std::shared_ptr<Node>&              new_node,
+    std::vector<size_t> RRTStar::findNearNodes(const std::shared_ptr<Node>&              target_node,
                                                const std::vector<std::shared_ptr<Node>>& node_list) const {
         std::vector<size_t> near_node_indexes;
 
@@ -217,7 +215,7 @@ namespace planner {
         if(num_node != 0) {
             double radius = R_ * std::pow((std::log(num_node) / num_node), 1.0 / constraint_->space.getDim());
             for(size_t i = 0; i < num_node; i++) {
-                double dist = node_list[i]->state.distanceFrom(new_node->state);
+                double dist = node_list[i]->state.distanceFrom(target_node->state);
                 if(dist < radius) {
                     near_node_indexes.push_back(i);
                 }
@@ -227,17 +225,16 @@ namespace planner {
         return near_node_indexes;
     }
 
-    std::shared_ptr<RRTStar::Node> RRTStar::chooseParentNode(const std::shared_ptr<Node>&              new_node,
+    std::shared_ptr<RRTStar::Node> RRTStar::chooseParentNode(const std::shared_ptr<Node>&              target_node,
                                                              const std::vector<std::shared_ptr<Node>>& node_list,
                                                              const std::vector<size_t>&                near_node_indexes) const {
-        // 制約を満たし、最もコストが小さくなるノードを親ノードとする
-        auto   min_cost_parent_node = new_node->parent;
+        auto   min_cost_parent_node = target_node->parent;
         double min_cost             = std::numeric_limits<double>::max();
         for(const auto& near_node_index : near_node_indexes) {
-            double dist = new_node->state.distanceFrom(node_list[near_node_index]->state);
+            double dist = target_node->state.distanceFrom(node_list[near_node_index]->state);
             double cost = node_list[near_node_index]->cost + dist;
             if(cost < min_cost) {
-                if(checkCollision(new_node, node_list[near_node_index])) {
+                if(checkCollision(target_node, node_list[near_node_index])) {
                     min_cost_parent_node = node_list[near_node_index];
                     min_cost             = cost;
                 }
@@ -245,11 +242,11 @@ namespace planner {
         }
 
         if(min_cost != std::numeric_limits<double>::max()) {
-            new_node->parent = min_cost_parent_node;
-            new_node->cost   = min_cost;
+            target_node->parent = min_cost_parent_node;
+            target_node->cost   = min_cost;
         }
 
-        return new_node;
+        return target_node;
     }
 
     void RRTStar::rewireNearNodes(std::vector<std::shared_ptr<Node>>& node_list,
@@ -267,13 +264,14 @@ namespace planner {
         }
     }
 
-    int RRTStar::getBestNodeIndex(const State& target_node,
+    int RRTStar::getBestNodeIndex(const State&                              target_state,
+                                  const double&                             radius,
                                   const std::vector<std::shared_ptr<Node>>& node_list) const {
         int    best_index = -1;
         double min_cost   = std::numeric_limits<double>::max();
         for(size_t i = 0; i < node_list.size(); i++) {
-            double dist_from_target = target_node.distanceFrom(node_list[i]->state);
-            if(dist_from_target < expand_dist_) {
+            double dist_from_target = target_state.distanceFrom(node_list[i]->state);
+            if(dist_from_target < radius) {
                 if(node_list[i]->cost < min_cost) {
                     best_index = i;
                     min_cost   = node_list[i]->cost;
