@@ -106,8 +106,8 @@ planner::RRTStar planner(DIM);
 planner.setProblemDefinition(constraint);
 
 // definition of start and goal state
-planner::State start(5.0, 5.0)
-planner::State goal(90.0, 90.0)
+planner::State start(5.0, 5.0);
+planner::State goal(90.0, 90.0);
 
 // solve
 bool status = planner.solve(start, goal);
