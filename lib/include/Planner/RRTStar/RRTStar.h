@@ -35,10 +35,16 @@
 
 namespace planner {
     class RRTStar : public base::PlannerBase {
-        struct Node {
+        class Node {
+        public:
             State                 state;
             std::shared_ptr<Node> parent;
             double                cost;
+
+            Node(const State&                _state,
+                 const std::shared_ptr<Node> _parent,
+                 const double&               _cost) :
+                state(_state), parent(_parent), cost(_cost) {}
         };
 
     public:

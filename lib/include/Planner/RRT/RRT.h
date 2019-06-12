@@ -35,9 +35,14 @@
 
 namespace planner {
     class RRT : public base::PlannerBase {
-        struct Node {
+        class Node {
+        public:
             State                 state;
             std::shared_ptr<Node> parent;
+
+            Node(const State&                _state,
+                 const std::shared_ptr<Node> _parent) :
+                state(_state), parent(_parent) {}
         };
 
     public:

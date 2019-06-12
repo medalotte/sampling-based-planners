@@ -63,9 +63,8 @@ namespace planner {
         // definition of constraint of generating random value in euclidean space
         std::vector<std::uniform_real_distribution<double>> rand_restrictions;
         for(size_t di = 1; di <= constraint_->space.getDim(); di++) {
-            auto restriction = std::uniform_real_distribution<>(constraint_->space.getBound(di).low,
-                                                                constraint_->space.getBound(di).high);
-            rand_restrictions.push_back(restriction);
+            rand_restrictions.emplace_back(constraint_->space.getBound(di).low,
+                                           constraint_->space.getBound(di).high);
         }
 
         // definition of random device in order to sample goal state with a certain probability
@@ -73,12 +72,12 @@ namespace planner {
 
         // definition of set of node
         std::vector<std::shared_ptr<Node>> node_list;
-        node_list.push_back(std::shared_ptr<Node>(new Node{start, nullptr}));
+        node_list.push_back(std::make_shared<Node>(start, nullptr));
 
         // sampling on euclidean space
         uint32_t sampling_cnt = 0;
         while(true) {
-            std::shared_ptr<Node> rand_node(new Node{goal, nullptr});
+            auto rand_node = std::make_shared<Node>(goal, nullptr);
             if(goal_sampling_rate_ < sample_restriction(rand)) {
                 for(size_t i = 0; i < constraint_->space.getDim(); i++) {
                     rand_node->state.vals[i] = rand_restrictions[i](rand);
@@ -102,9 +101,7 @@ namespace planner {
 
                 // terminate processing if distance between new node and goal state is less than 'expand_dist'
                 if(new_node->state.distanceFrom(goal) <= expand_dist_) {
-                    new_node         = std::shared_ptr<Node>(new Node{goal, nullptr});
-                    new_node->parent = node_list.back();
-                    node_list.push_back(new_node);
+                    node_list.push_back(std::make_shared<Node>(goal, node_list.back()));
                     break;
                 }
             }
