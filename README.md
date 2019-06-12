@@ -57,7 +57,7 @@ planner::EuclideanSpace space(DIM);
 // definition of bounds of each dimension
 std::vector<planner::Bound> bounds{planner::Bound(0, 100.0),
                                    planner::Bound(0, 100.0)};
-                                   
+
 // set bounds to space
 space.setBound(bounds);
 ```
@@ -71,8 +71,8 @@ obstacles.emplace_back(planner::State(10.0, 20.0),  10.0);  // x : 10.0, y : 20.
 obstacles.emplace_back(planner::State(50.0, 70.0),  20.0);  // x : 50.0, y : 70.0, radius : 20.0
 obstacles.emplace_back(planner::State(-10.0, 120.0), 30.0); // there is no probrem out of range
 
-// definition of constraint
-planner::PointCloudConstraint constraint(space, obstacles);
+// definition of constraint using std::shared_ptr
+auto constraint = std::make_shard<planner::PointCloudConstraint>(space, obstacles)
 ```
 
 #### ii. Image type (use OpenCV for simplicity)
@@ -93,8 +93,8 @@ for(int yi = 0; yi < world.rows; yi++) {
 
 std::vector<uint32_t> each_dim_size{(uint32_t)world.cols, (uint32_t)world.rows};
 
-// definition of constraint
-planner::SemanticSegmentConstraint constraint(space, constraint_map, each_dim_size);
+// definition of constraint using std::shared_ptr
+auto constraint = std::make_shared<planner::SemanticSegmentConstraint>(space, constraint_map, each_dim_size);
 ```
 
 ### 4. Solve
@@ -123,7 +123,6 @@ else {
 ```
 
 ## Example programs
-
 ### Example1. path-planning-2D
 Execute path planning on two-dimensional space
 
