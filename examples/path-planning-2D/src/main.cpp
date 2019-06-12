@@ -80,10 +80,10 @@ int main() {
                             // and you should set each dimension size to std::vector<uint32_t>
                             std::vector<planner::ConstraintType> constraint_map(world.cols * world.rows,
                                                                                 planner::ConstraintType::ENTAERABLE);
-                            for(int ri = 0; ri < world.rows; ri++) {
-                                for(int ci = 0; ci < world.cols; ci++) {
-                                    if(world.data[ci + ri * world.cols] != 255) {
-                                        constraint_map[ci + ri * world.cols] = planner::ConstraintType::NOENTRY;
+                            for(int yi = 0; yi < world.rows; yi++) {
+                                for(int xi = 0; xi < world.cols; xi++) {
+                                    if(world.data[xi + yi * world.cols] != 255) {
+                                        constraint_map[xi + yi * world.cols] = planner::ConstraintType::NOENTRY;
                                     }
                                 }
                             }
@@ -198,9 +198,7 @@ int main() {
 
                 auto prev_node_pos = cv::Point(result[0].vals[0], result[0].vals[1]);
                 for(const auto& r : result) {
-                    std::cout << r.vals[0] << ", "
-                              << r.vals[1]
-                              << std::endl;
+                    std::cout << r << std::endl;
 
                     cv::circle(world, cv::Point(r.vals[0], r.vals[1]), 4.0, cv::Vec3b(128, 0, 255), 1.0, CV_AA);
                     cv::line(world, cv::Point(r.vals[0], r.vals[1]), prev_node_pos, cv::Vec3b(128, 255, 0), 2.0, CV_AA);
