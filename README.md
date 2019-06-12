@@ -43,20 +43,21 @@ $ make
 ```
 
 ## Usage
-### 1. Include header file
+### 1. Include header file and set alias optionally
 ``` c++
 #include <planner.h>
+namespace planner = pln
 ```
 
 ### 2. Define euclidean space
 ``` c++
 // difinition of two-dimensional space
 const int DIM = 2;
-planner::EuclideanSpace space(DIM);
+pln::EuclideanSpace space(DIM);
 
 // definition of bounds of each dimension
-std::vector<planner::Bound> bounds{planner::Bound(0, 100.0),
-                                   planner::Bound(0, 100.0)};
+std::vector<pln::Bound> bounds{pln::Bound(0, 100.0),
+                               pln::Bound(0, 100.0)};
 
 // set bounds to space
 space.setBound(bounds);
@@ -66,13 +67,13 @@ space.setBound(bounds);
 #### i. Point cloud type
 ``` c++
 // definition of obstacle (point cloud type)
-std::vector<planner::PointCloudConstraint::Hypersphere> obstacles;
-obstacles.emplace_back(planner::State(10.0, 20.0),  10.0);  // x : 10.0, y : 20.0, radius : 10.0
-obstacles.emplace_back(planner::State(50.0, 70.0),  20.0);  // x : 50.0, y : 70.0, radius : 20.0
-obstacles.emplace_back(planner::State(-10.0, 120.0), 30.0); // there is no probrem out of range
+std::vector<pln::PointCloudConstraint::Hypersphere> obstacles;
+obstacles.emplace_back(pln::State(10.0, 20.0),  10.0);  // x : 10.0, y : 20.0, radius : 10.0
+obstacles.emplace_back(pln::State(50.0, 70.0),  20.0);  // x : 50.0, y : 70.0, radius : 20.0
+obstacles.emplace_back(pln::State(-10.0, 120.0), 30.0); // there is no probrem out of range
 
 // definition of constraint using std::shared_ptr
-auto constraint = std::make_shard<planner::PointCloudConstraint>(space, obstacles)
+auto constraint = std::make_shared<pln::PointCloudConstraint>(space, obstacles)
 ```
 
 #### ii. Image type (use OpenCV for simplicity)
@@ -81,12 +82,12 @@ auto constraint = std::make_shard<planner::PointCloudConstraint>(space, obstacle
 auto world = cv::imread("./example.png", CV_8UC1);
 
 // definition of constraint array
-std::vector<planner::ConstraintType> constraint_map(world.cols * world.rows,
-                                                    planner::ConstraintType::ENTAERABLE);
+std::vector<pln::ConstraintType> constraint_map(world.cols * world.rows,
+                                                pln::ConstraintType::ENTAERABLE);
 for(int yi = 0; yi < world.rows; yi++) {
     for(int xi = 0; xi < world.cols; xi++) {
         if(world.data[xi + yi * world.cols] != 255) {
-            constraint_map[xi + yi * world.cols] = planner::ConstraintType::NOENTRY;
+            constraint_map[xi + yi * world.cols] = pln::ConstraintType::NOENTRY;
         }
     }
 }
@@ -94,20 +95,20 @@ for(int yi = 0; yi < world.rows; yi++) {
 std::vector<uint32_t> each_dim_size{(uint32_t)world.cols, (uint32_t)world.rows};
 
 // definition of constraint using std::shared_ptr
-auto constraint = std::make_shared<planner::SemanticSegmentConstraint>(space, constraint_map, each_dim_size);
+auto constraint = std::make_shared<pln::SemanticSegmentConstraint>(space, constraint_map, each_dim_size);
 ```
 
 ### 4. Solve
 ``` c++
 // definition of planner (you can set some parameters at optional argument)
-planner::RRTStar planner(DIM);
+pln::RRTStar planner(DIM);
 
 // set constraint
 planner.setProblemDefinition(constraint);
 
 // definition of start and goal state
-planner::State start(5.0, 5.0);
-planner::State goal(90.0, 90.0);
+pln::State start(5.0, 5.0);
+pln::State goal(90.0, 90.0);
 
 // solve
 bool status = planner.solve(start, goal);
