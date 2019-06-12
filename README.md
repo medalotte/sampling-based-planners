@@ -49,18 +49,18 @@ Execute path planning on two-dimensional space
 
 ##### Pattern1. Constraint besed on image
 <div style="text-align: center;">
-    <img src="assets/result_2D_img.png" alt="result_2D_img.png" width=50%>
+    <img src="assets/result_2D_img.png" alt="result_2D_img.png">
 </div>
 
 ##### Pattern2. Constraint besed on set of circle
 <div style="text-align: center;">
-    <img src="assets/result_2D_circle.png" alt="result_2D_circle.png" width=50%>
+    <img src="assets/result_2D_circle.png" alt="result_2D_circle.png">
 </div>
 
 ## Usage
 Please read source code of expample programs.
 
-## Refarences
+## References
 [Steven M. LaValle, "Rapidly-exploring random trees: A new tool for path planning," Technical Report. Computer Science Department, Iowa State University (TR 98–11).](http://msl.cs.uiuc.edu/~lavalle/papers/Lav98c.pdf)
 
 [S. Karaman and E. Frazzoli, "Incremental Sampling-based Algorithms for Optimal Motion Planning," arXiv:1005.0416, May. 2010.](https://arxiv.org/pdf/1005.0416.pdf)
