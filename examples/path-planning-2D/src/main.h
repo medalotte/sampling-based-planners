@@ -33,6 +33,8 @@
 
 #include <planner.h>
 
+// Classes that have parameters. The detail is here.
+// https://github.com/kyk0910/OpenCV-YAMLHelper
 class RRTParam : public cvlib::YAMLHelper::Param {
 public:
     int    max_sampling_num;

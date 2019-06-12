@@ -63,19 +63,21 @@ int main() {
 
                     switch(mode) {
                         case '1': {
+                            //--- set constraint based on image
                             auto img_file_path = PARAM_YAML_DIRECTORY + "/" +
                                 cvlib::YAMLHelper::read<std::string>(PARAM_YAML_FILE_PATH, "ConstraintImage");
 
                             world = cv::imread(img_file_path, CV_8UC1);
 
+                            //-- generate space and constraint
+                            // A space should set bound at each dimension
                             planner::EuclideanSpace space(DIM);
                             std::vector<planner::Bound> bounds{planner::Bound(0, world.cols),
                                                                planner::Bound(0, world.rows)};
                             space.setBound(bounds);
 
-                            std::vector<uint32_t> each_dim_size{(uint32_t)world.cols,
-                                                                (uint32_t)world.rows};
-
+                            // A constraint based on image(semantic segment) use one dimension std::vector<planner::ConstraintType>,
+                            // and you should set each dimension size to std::vector<uint32_t>
                             std::vector<planner::ConstraintType> constraint_map(world.cols * world.rows,
                                                                                 planner::ConstraintType::ENTAERABLE);
                             for(int ri = 0; ri < world.rows; ri++) {
@@ -86,17 +88,25 @@ int main() {
                                 }
                             }
 
+                            std::vector<uint32_t> each_dim_size{(uint32_t)world.cols,
+                                                                (uint32_t)world.rows};
+
+                            //-- apply constraint
                             constraint = std::make_shared<planner::SemanticSegmentConstraint>(space,
                                                                                               constraint_map,
                                                                                               each_dim_size);
                             return;
                         }
                         case '2': {
+                            //--- set constraint based on set of circle
+                            //-- generate space and constraint
+                            // A space should set bound at each dimension
                             planner::EuclideanSpace space(DIM);
                             std::vector<planner::Bound> bounds{planner::Bound(0, world.cols),
                                                                planner::Bound(0, world.rows)};
                             space.setBound(bounds);
 
+                            // set of circle define as std::vector<planner::PointCloudConstraint::Hypersphere>
                             auto obstacle_num = cvlib::YAMLHelper::read<int>(PARAM_YAML_FILE_PATH, "Obstacles", "num");
                             std::vector<planner::PointCloudConstraint::Hypersphere> obstacles;
                             for(int i = 0; i < obstacle_num; i++) {
@@ -105,9 +115,11 @@ int main() {
                                 obstacles.emplace_back(planner::State(obstacle_param.x, obstacle_param.y), obstacle_param.radius);
                             }
 
+                            //-- apply constraint
                             constraint = std::make_shared<planner::PointCloudConstraint>(space,
                                                                                          obstacles);
 
+                            //-- draw set of circle to world img
                             for(const auto& obstacle : static_cast<planner::PointCloudConstraint*>(constraint.get())->getRef()) {
                                 cv::circle(world, cv::Point(obstacle.getState().vals[0], obstacle.getState().vals[1]),
                                            obstacle.getRadius(), 0, -1, CV_AA);
@@ -179,6 +191,7 @@ int main() {
             auto end_time   = std::chrono::system_clock::now();
 
             if(status) {
+                // draw and output result
                 auto result = planner->getResult();
 
                 cv::cvtColor(world, world, CV_GRAY2RGB);
