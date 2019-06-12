@@ -105,7 +105,7 @@ planner::RRTStar planner(DIM);
 planner.setProblemDefinition(constraint);
 
 // solve
-bool status = planner.solve;
+bool status = planner.solve();
 if(status) {
     auto result = planner.getResult();
     for(const auto& r : result) {
