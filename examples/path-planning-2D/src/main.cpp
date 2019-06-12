@@ -23,6 +23,7 @@
  */
 
 #include "main.h"
+namespace pln = planner;
 
 int main() {
     const int DIM = 2;
@@ -31,8 +32,8 @@ int main() {
     const std::string PARAM_YAML_FILE_PATH = PARAM_YAML_DIRECTORY + "/" + PARAM_YAML_FILE_NAME;
 
     try {
-        std::unique_ptr<planner::base::PlannerBase>    planner;
-        std::shared_ptr<planner::base::ConstraintBase> constraint;
+        std::unique_ptr<pln::base::PlannerBase>    planner;
+        std::shared_ptr<pln::base::ConstraintBase> constraint;
 
         RRTParam     rrt_param;
         RRTStarParam rrt_star_param;
@@ -47,8 +48,8 @@ int main() {
         while(true) {
             bool end_flag = false;
             auto world    = cv::Mat(cv::Size(world_size.x, world_size.y), CV_8UC1, 0xFF);
-            auto start    = planner::State(start_state.x, start_state.y);
-            auto goal     = planner::State(goal_state.x,  goal_state.y);
+            auto start    = pln::State(start_state.x, start_state.y);
+            auto goal     = pln::State(goal_state.x, goal_state.y);
 
             [&]() {
                 while(true) {
@@ -71,56 +72,50 @@ int main() {
 
                             //-- generate space and constraint
                             // A space should set bound at each dimension
-                            planner::EuclideanSpace space(DIM);
-                            std::vector<planner::Bound> bounds{planner::Bound(0, world.cols),
-                                                               planner::Bound(0, world.rows)};
+                            pln::EuclideanSpace space(DIM);
+                            std::vector<pln::Bound> bounds{pln::Bound(0, world.cols), pln::Bound(0, world.rows)};
                             space.setBound(bounds);
 
-                            // A constraint based on image(semantic segment) use one dimension std::vector<planner::ConstraintType>,
+                            // A constraint based on image(semantic segment) use one dimension std::vector<pln::ConstraintType>,
                             // and you should set each dimension size to std::vector<uint32_t>
-                            std::vector<planner::ConstraintType> constraint_map(world.cols * world.rows,
-                                                                                planner::ConstraintType::ENTAERABLE);
+                            std::vector<pln::ConstraintType> map(world.cols * world.rows,
+                                                                 pln::ConstraintType::ENTAERABLE);
                             for(int yi = 0; yi < world.rows; yi++) {
                                 for(int xi = 0; xi < world.cols; xi++) {
                                     if(world.data[xi + yi * world.cols] != 255) {
-                                        constraint_map[xi + yi * world.cols] = planner::ConstraintType::NOENTRY;
+                                        map[xi + yi * world.cols] = pln::ConstraintType::NOENTRY;
                                     }
                                 }
                             }
 
-                            std::vector<uint32_t> each_dim_size{(uint32_t)world.cols,
-                                                                (uint32_t)world.rows};
+                            std::vector<uint32_t> each_dim_size{(uint32_t)world.cols, (uint32_t)world.rows};
 
                             //-- apply constraint
-                            constraint = std::make_shared<planner::SemanticSegmentConstraint>(space,
-                                                                                              constraint_map,
-                                                                                              each_dim_size);
+                            constraint = std::make_shared<pln::SemanticSegmentConstraint>(space, map, each_dim_size);
                             return;
                         }
                         case '2': {
                             //--- set constraint based on set of circle
                             //-- generate space and constraint
                             // A space should set bound at each dimension
-                            planner::EuclideanSpace space(DIM);
-                            std::vector<planner::Bound> bounds{planner::Bound(0, world.cols),
-                                                               planner::Bound(0, world.rows)};
+                            pln::EuclideanSpace space(DIM);
+                            std::vector<pln::Bound> bounds{pln::Bound(0, world.cols), pln::Bound(0, world.rows)};
                             space.setBound(bounds);
 
-                            // set of circle define as std::vector<planner::PointCloudConstraint::Hypersphere>
+                            // set of circle define as std::vector<pln::PointCloudConstraint::Hypersphere>
                             auto obstacle_num = cvlib::YAMLHelper::read<int>(PARAM_YAML_FILE_PATH, "Obstacles", "num");
-                            std::vector<planner::PointCloudConstraint::Hypersphere> obstacles;
+                            std::vector<pln::PointCloudConstraint::Hypersphere> obstacles;
                             for(int i = 0; i < obstacle_num; i++) {
                                 ObstacleParam obstacle_param;
                                 cvlib::YAMLHelper::readStruct(obstacle_param, PARAM_YAML_FILE_PATH, "Obstacles", "Obstacle" + std::to_string(i));
-                                obstacles.emplace_back(planner::State(obstacle_param.x, obstacle_param.y), obstacle_param.radius);
+                                obstacles.emplace_back(pln::State(obstacle_param.x, obstacle_param.y), obstacle_param.radius);
                             }
 
                             //-- apply constraint
-                            constraint = std::make_shared<planner::PointCloudConstraint>(space,
-                                                                                         obstacles);
+                            constraint = std::make_shared<pln::PointCloudConstraint>(space, obstacles);
 
                             //-- draw set of circle to world img
-                            for(const auto& obstacle : static_cast<planner::PointCloudConstraint*>(constraint.get())->getRef()) {
+                            for(const auto& obstacle : static_cast<pln::PointCloudConstraint*>(constraint.get())->getRef()) {
                                 cv::circle(world, cv::Point(obstacle.getState().vals[0], obstacle.getState().vals[1]),
                                            obstacle.getRadius(), 0, -1, CV_AA);
                             }
@@ -155,18 +150,18 @@ int main() {
 
                     switch(mode) {
                         case '1': {
-                            planner = std::make_unique<planner::RRT>(DIM,
-                                                                     rrt_param.max_sampling_num,
-                                                                     rrt_param.goal_sampling_rate,
-                                                                     rrt_param.expand_dist);
+                            planner = std::make_unique<pln::RRT>(DIM,
+                                                                 rrt_param.max_sampling_num,
+                                                                 rrt_param.goal_sampling_rate,
+                                                                 rrt_param.expand_dist);
                             return;
                         }
                         case '2': {
-                            planner = std::make_unique<planner::RRTStar>(DIM,
-                                                                         rrt_star_param.max_sampling_num,
-                                                                         rrt_star_param.goal_sampling_rate,
-                                                                         rrt_star_param.expand_dist,
-                                                                         rrt_star_param.R);
+                            planner = std::make_unique<pln::RRTStar>(DIM,
+                                                                     rrt_star_param.max_sampling_num,
+                                                                     rrt_star_param.goal_sampling_rate,
+                                                                     rrt_star_param.expand_dist,
+                                                                     rrt_star_param.R);
                             return;
                         }
                         case 'q': {
