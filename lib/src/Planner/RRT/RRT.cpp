@@ -70,8 +70,9 @@ namespace planner {
         // definition of random device in order to sample goal state with a certain probability
         auto sample_restriction = std::uniform_real_distribution<>(0, 1.0);
 
-        // definition of set of node
+        // initialize list of node
         std::vector<std::shared_ptr<Node>> node_list;
+        node_list.reserve(max_sampling_num_);
         node_list.push_back(std::make_shared<Node>(start, nullptr));
 
         // sampling on euclidean space
@@ -114,7 +115,7 @@ namespace planner {
 
         // store the result
         result_.clear();
-        auto result_node = node_list.back();
+        std::shared_ptr<base::NodeBase> result_node = node_list.back();
         while(true) {
             auto result_begin_itr = result_.begin();
             result_.insert(result_begin_itr, result_node->state);
@@ -124,6 +125,10 @@ namespace planner {
             }
             result_node = result_node->parent;
         }
+
+        // store the node list
+        node_list_.clear();
+        std::move(node_list.begin(), node_list.end(), std::back_inserter(node_list_));
 
         return true;
     }

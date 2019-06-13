@@ -35,16 +35,13 @@
 
 namespace planner {
     class RRTStar : public base::PlannerBase {
-        class Node {
+        class Node : public base::NodeBase {
         public:
-            State                 state;
-            std::shared_ptr<Node> parent;
-            double                cost;
-
+            double cost;
             Node(const State&                _state,
                  const std::shared_ptr<Node> _parent,
                  const double&               _cost) :
-                state(_state), parent(_parent), cost(_cost) {}
+                base::NodeBase(_state, _parent), cost(_cost) {}
         };
 
     public:
@@ -55,12 +52,12 @@ namespace planner {
                 double   R                  = 10.0);
         ~RRTStar();
 
-        bool solve(const State& start, const State& goal) override;
-
         void setMaxSamplingNum(uint32_t max_sampling_num) noexcept;
         void setGoalSamplingRate(double goal_sampling_rate);
         void setExpandDist(double expand_dist) noexcept;
         void setR(double R) noexcept;
+
+        bool solve(const State& start, const State& goal) override;
 
     private:
         uint32_t max_sampling_num_;

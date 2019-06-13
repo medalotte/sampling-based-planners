@@ -41,8 +41,12 @@ namespace planner {
             constraint_ = constraint;
         }
 
-        std::vector<State> PlannerBase::getResult() const {
+        const std::vector<State>& PlannerBase::getResultRef() const {
             return result_;
+        }
+
+        const std::vector<std::shared_ptr<NodeBase>>& PlannerBase::getNodeListRef() const {
+            return node_list_;
         }
     }
 }

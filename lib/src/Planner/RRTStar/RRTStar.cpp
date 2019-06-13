@@ -37,6 +37,9 @@ namespace planner {
         setGoalSamplingRate(goal_sampling_rate);
     }
 
+    RRTStar::~RRTStar() {
+    }
+
     void RRTStar::setMaxSamplingNum(uint32_t max_sampling_num) noexcept {
         max_sampling_num_ = max_sampling_num;
     }
@@ -58,9 +61,6 @@ namespace planner {
         R_ = R;
     }
 
-    RRTStar::~RRTStar() {
-    }
-
     bool RRTStar::solve(const State& start, const State& goal) {
         // definition of random device
         std::random_device rand_dev;
@@ -78,6 +78,7 @@ namespace planner {
 
         // definition of set of node
         std::vector<std::shared_ptr<Node>> node_list;
+        node_list.reserve(max_sampling_num_);
         node_list.push_back(std::make_shared<Node>(start, nullptr, 0));
 
         // sampling on euclidean space
@@ -124,7 +125,7 @@ namespace planner {
             return false;
         }
         else {
-            auto result_node = node_list[best_last_index];
+            std::shared_ptr<base::NodeBase> result_node = node_list[best_last_index];
             if(result_node->state != goal) {
                 result_.push_back(goal);
             }
@@ -140,6 +141,10 @@ namespace planner {
                 result_node = result_node->parent;
             }
         }
+
+        // store the node list
+        node_list_.clear();
+        std::move(node_list.begin(), node_list.end(), std::back_inserter(node_list_));
 
         return true;
     }

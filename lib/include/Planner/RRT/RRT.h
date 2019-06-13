@@ -35,17 +35,14 @@
 
 namespace planner {
     class RRT : public base::PlannerBase {
-        class Node {
+    public:
+        class Node : public base::NodeBase {
         public:
-            State                 state;
-            std::shared_ptr<Node> parent;
-
             Node(const State&                _state,
                  const std::shared_ptr<Node> _parent) :
-                state(_state), parent(_parent) {}
+                base::NodeBase(_state, _parent) {}
         };
 
-    public:
         RRT(uint32_t dim,
             uint32_t max_sampling_num   = 10000,
             double   goal_sampling_rate = 0.05,
