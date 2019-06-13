@@ -4,7 +4,7 @@ Pure C++ implementation of RRT, RRT*, and Informed-RRT* as a shared library whic
 #### TODO
 - Implement Informed-RRT* (Sorry, it has not been implemented yet)
 - Implement `examples/path-planner-3D`
-    - abopt python API (Python.h) and use matplotlib in order to plot 3D graph
+    - adopt python API (Python.h) and use matplotlib in order to plot 3D graph
 
 ## Features
 - Provided as a shared library usable in **C++14** or higher
