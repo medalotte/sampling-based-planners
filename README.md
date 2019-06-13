@@ -128,13 +128,25 @@ else {
 Execute path planning on two-dimensional space
 
 #### Pattern1. Constraint using set of circle
+##### RRT
 <div style="text-align: center;">
-    <img src="assets/result_2D_circle.png" alt="result_2D_circle.png">
+    <img src="assets/result_2D_RRT_circle.png" alt="result_2D_RRT_circle.png">
+</div>
+
+##### RRT*
+<div style="text-align: center;">
+    <img src="assets/result_2D_RRTStar_circle.png" alt="result_2D_RRTStar_circle.png">
 </div>
 
 #### Pattern2. Constraint using image
+##### RRT
 <div style="text-align: center;">
-    <img src="assets/result_2D_img.png" alt="result_2D_img.png">
+    <img src="assets/result_2D_RRT_img.png" alt="result_2D_RRT_img.png">
+</div>
+
+##### RRT*
+<div style="text-align: center;">
+    <img src="assets/result_2D_RRTStar_img.png" alt="result_2D_RRTStar_img.png">
 </div>
 
 ## References
