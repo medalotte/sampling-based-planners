@@ -46,10 +46,10 @@ int main() {
         cvlib::YAMLHelper::readStruct(goal_state,  PARAM_YAML_FILE_PATH, "GoalState");
 
         while(true) {
-            bool end_flag = false;
-            auto world    = cv::Mat(cv::Size(world_size.x, world_size.y), CV_8UC1, 0xFF);
-            auto start    = pln::State(start_state.x, start_state.y);
-            auto goal     = pln::State(goal_state.x, goal_state.y);
+            bool    end_flag = false;
+            cv::Mat world    = cv::Mat::zeros(cv::Size(world_size.x, world_size.y), CV_8UC1);
+            auto    start    = pln::State(start_state.x, start_state.y);
+            auto    goal     = pln::State(goal_state.x, goal_state.y);
 
             [&]() {
                 while(true) {
@@ -82,7 +82,7 @@ int main() {
                                                                  pln::ConstraintType::ENTAERABLE);
                             for(int yi = 0; yi < world.rows; yi++) {
                                 for(int xi = 0; xi < world.cols; xi++) {
-                                    if(world.data[xi + yi * world.cols] != 255) {
+                                    if(world.data[xi + yi * world.cols] != 0) {
                                         map[xi + yi * world.cols] = pln::ConstraintType::NOENTRY;
                                     }
                                 }
@@ -117,7 +117,7 @@ int main() {
                             //-- draw set of circle to world img
                             for(const auto& obstacle : static_cast<pln::PointCloudConstraint*>(constraint.get())->getRef()) {
                                 cv::circle(world, cv::Point(obstacle.getState().vals[0], obstacle.getState().vals[1]),
-                                           obstacle.getRadius(), 0, -1, CV_AA);
+                                           obstacle.getRadius(), 0xFF, -1, CV_AA);
                             }
 
                             return;
@@ -187,23 +187,45 @@ int main() {
 
             if(status) {
                 // draw and output result
-                auto result = planner->getResult();
+                auto node_list = planner->getNodeListRef();
+                auto result    = planner->getResultRef();
 
                 cv::cvtColor(world, world, CV_GRAY2RGB);
+
+                for(int yi = 0; yi < world.rows; yi++) {
+                    for(int xi = 0; xi < world.cols; xi++) {
+                        if(world.at<cv::Vec3b>(yi, xi) != cv::Vec3b(0, 0, 0)) {
+                            world.at<cv::Vec3b>(yi, xi) = cv::Vec3b(192, 128, 224);
+                        }
+                    }
+                }
+
+                for(const auto& node : node_list) {
+                    if(node->parent != nullptr) {
+                        cv::line(world,
+                                 cv::Point(node->state.vals[0], node->state.vals[1]),
+                                 cv::Point(node->parent->state.vals[0], node->parent->state.vals[1]),
+                                 cv::Vec3b(64, 92, 16), 1.0, CV_AA);
+                    }
+                }
 
                 auto prev_node_pos = cv::Point(result[0].vals[0], result[0].vals[1]);
                 for(const auto& r : result) {
                     std::cout << r << std::endl;
 
-                    cv::circle(world, cv::Point(r.vals[0], r.vals[1]), 4.0, cv::Vec3b(128, 0, 255), 1.0, CV_AA);
-                    cv::line(world, cv::Point(r.vals[0], r.vals[1]), prev_node_pos, cv::Vec3b(128, 255, 0), 2.0, CV_AA);
+                    cv::circle(world, cv::Point(r.vals[0], r.vals[1]), 3.0, cv::Vec3b(128, 128, 255), 1, CV_AA);
+                    cv::line(world, cv::Point(r.vals[0], r.vals[1]), prev_node_pos, cv::Vec3b(128, 255, 128), 1, CV_AA);
                     prev_node_pos = cv::Point(r.vals[0], r.vals[1]);
                 }
 
-                cv::putText(world, "Start", cv::Point(result.front().vals[0], result.front().vals[1]),
-                            cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(200,0,0), 2, CV_AA);
-                cv::putText(world, "Goal",  cv::Point(result.back().vals[0],  result.back().vals[1]),
-                            cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(200,0,0), 2, CV_AA);
+
+                cv::circle(world, cv::Point(result.front().vals[0], result.front().vals[1]), 6.0, cv::Vec3b(128, 255, 255), -1, CV_AA);
+                cv::putText(world, "Start", cv::Point(result.front().vals[0] + 10, result.front().vals[1]),
+                            cv::FONT_HERSHEY_COMPLEX_SMALL | cv::FONT_ITALIC, 1.0, cv::Scalar(128, 255, 255), 1, CV_AA);
+
+                cv::circle(world, cv::Point(result.back().vals[0], result.back().vals[1]), 6.0, cv::Vec3b(128, 255, 255), -1, CV_AA);
+                cv::putText(world, "Goal",  cv::Point(result.back().vals[0] + 10,  result.back().vals[1]),
+                            cv::FONT_HERSHEY_COMPLEX_SMALL | cv::FONT_ITALIC, 1.0, cv::Scalar(128, 255, 255), 1, CV_AA);
 
                 cv::namedWindow("world", cv::WINDOW_NORMAL | cv::WINDOW_KEEPRATIO);
                 cv::imshow("world", world);
