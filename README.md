@@ -113,7 +113,7 @@ pln::State goal(90.0, 90.0);
 // solve
 bool status = planner.solve(start, goal);
 if(status) {
-    auto result = planner.getResult();
+    auto result = planner.getResultRef();
     for(const auto& r : result) {
         std::cout << r << std::endl;
     }
