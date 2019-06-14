@@ -43,6 +43,8 @@ namespace planner {
             NodeBase(const State&                    _state,
                      const std::shared_ptr<NodeBase> _parent) :
                 state(_state), parent(_parent) {}
+
+            virtual ~NodeBase() {}
         };
 
         /**
@@ -51,7 +53,7 @@ namespace planner {
         class PlannerBase {
         public:
             PlannerBase(uint32_t dim);
-            ~PlannerBase();
+            virtual ~PlannerBase();
 
             PlannerBase(const PlannerBase& obj) = delete;
             PlannerBase &operator =(const PlannerBase& obj) = delete;
