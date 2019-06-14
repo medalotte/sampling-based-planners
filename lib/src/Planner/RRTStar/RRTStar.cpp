@@ -170,7 +170,7 @@ namespace planner {
                                                               const double& expand_dist) const {
         auto steered_node = std::make_shared<Node>(src_node->state, src_node, src_node->cost);
 
-        if(src_node->state.distanceFrom(dst_node->state) < expand_dist_) {
+        if(src_node->state.distanceFrom(dst_node->state) < expand_dist) {
             steered_node->cost  += src_node->state.distanceFrom(dst_node->state);
             steered_node->state  = dst_node->state;
         }
