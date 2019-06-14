@@ -132,9 +132,7 @@ namespace planner {
             }
 
             while(true) {
-                auto result_begin_itr = result_.begin();
-                result_.insert(result_begin_itr, result_node->state);
-
+                result_.insert(result_.begin(), result_node->state);
                 if(result_node->parent == nullptr) {
                     break;
                 }
