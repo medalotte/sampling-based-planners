@@ -33,54 +33,56 @@
 
 #include <planner.h>
 
-// Classes that have parameters. The detail is here.
-// https://github.com/kyk0910/OpenCV-YAMLHelper
-class RRTParam : public cvlib::YAMLHelper::Param {
-public:
-    int    max_sampling_num;
-    double goal_sampling_rate;
-    double expand_dist;
-    void read(const cv::FileNode& node) override {
-        max_sampling_num   = (int)node["max_sampling_num"];
-        goal_sampling_rate = (double)node["goal_sampling_rate"];
-        expand_dist        = (double)node["expand_dist"];
-    }
-};
+namespace {
+    // Classes that have parameters. The detail is here.
+    // https://github.com/kyk0910/OpenCV-YAMLHelper
+    class RRTParam : public cvlib::YAMLHelper::Param {
+    public:
+        int    max_sampling_num;
+        double goal_sampling_rate;
+        double expand_dist;
+        void read(const cv::FileNode& node) override {
+            max_sampling_num   = (int)node["max_sampling_num"];
+            goal_sampling_rate = (double)node["goal_sampling_rate"];
+            expand_dist        = (double)node["expand_dist"];
+        }
+    };
 
-class RRTStarParam : public cvlib::YAMLHelper::Param {
-public:
-    int    max_sampling_num;
-    double goal_sampling_rate;
-    double expand_dist;
-    double R;
-    void read(const cv::FileNode& node) override {
-        max_sampling_num   = (int)node["max_sampling_num"];
-        goal_sampling_rate = (double)node["goal_sampling_rate"];
-        expand_dist        = (double)node["expand_dist"];
-        R                  = (double)node["R"];
-    }
-};
+    class RRTStarParam : public cvlib::YAMLHelper::Param {
+    public:
+        int    max_sampling_num;
+        double goal_sampling_rate;
+        double expand_dist;
+        double R;
+        void read(const cv::FileNode& node) override {
+            max_sampling_num   = (int)node["max_sampling_num"];
+            goal_sampling_rate = (double)node["goal_sampling_rate"];
+            expand_dist        = (double)node["expand_dist"];
+            R                  = (double)node["R"];
+        }
+    };
 
-class StateParam : public cvlib::YAMLHelper::Param {
-public:
-    double x;
-    double y;
-    void read(const cv::FileNode& node) override {
-        x = (double)node["x"];
-        y = (double)node["y"];
-    }
-};
+    class StateParam : public cvlib::YAMLHelper::Param {
+    public:
+        double x;
+        double y;
+        void read(const cv::FileNode& node) override {
+            x = (double)node["x"];
+            y = (double)node["y"];
+        }
+    };
 
-class ObstacleParam : public cvlib::YAMLHelper::Param {
-public:
-    double x;
-    double y;
-    double radius;
-    void read(const cv::FileNode& node) override {
-        x      = (double)node["x"];
-        y      = (double)node["y"];
-        radius = (double)node["radius"];
-    }
-};
+    class ObstacleParam : public cvlib::YAMLHelper::Param {
+    public:
+        double x;
+        double y;
+        double radius;
+        void read(const cv::FileNode& node) override {
+            x      = (double)node["x"];
+            y      = (double)node["y"];
+            radius = (double)node["radius"];
+        }
+    };
+}
 
 #endif /* PATH_PLANNING_SRC_MAIN_H_ */
