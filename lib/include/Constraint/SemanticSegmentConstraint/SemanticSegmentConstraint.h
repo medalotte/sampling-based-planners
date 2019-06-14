@@ -46,7 +46,7 @@ namespace planner {
          *  Constructor(SemanticSegmentConstraint)
          *  @space: target space
          */
-        SemanticSegmentConstraint(const EuclideanSpace& space);
+        explicit SemanticSegmentConstraint(const EuclideanSpace& space);
 
         /**
          *  Constructor(SemanticSegmentConstraint)

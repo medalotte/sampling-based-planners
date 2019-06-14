@@ -73,7 +73,7 @@ namespace planner {
          *  Constructor(PointCloudConstraint)
          *  @space: target space
          */
-        PointCloudConstraint(const EuclideanSpace& space);
+        explicit PointCloudConstraint(const EuclideanSpace& space);
 
         /**
          *  Constructor(PointCloudConstraint)

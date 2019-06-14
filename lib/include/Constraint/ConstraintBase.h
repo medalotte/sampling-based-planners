@@ -53,7 +53,7 @@ namespace planner {
              *  Constructor(ConstraintBase)
              *  @space: target space
              */
-            ConstraintBase(const EuclideanSpace& _space);
+            explicit ConstraintBase(const EuclideanSpace& _space);
             virtual ~ConstraintBase();
 
             uint32_t getDim() const;

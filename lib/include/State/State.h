@@ -40,9 +40,9 @@ namespace planner {
     public:
         std::vector<double> vals;
 
-        State(uint32_t dim);
+        explicit State(uint32_t dim);
 
-        State(const std::vector<double>& _vals);
+        explicit State(const std::vector<double>& _vals);
 
         template<class... A>
         State(const A&... _vals) :

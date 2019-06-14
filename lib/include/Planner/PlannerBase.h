@@ -52,7 +52,7 @@ namespace planner {
          */
         class PlannerBase {
         public:
-            PlannerBase(uint32_t dim);
+            explicit PlannerBase(uint32_t dim);
             virtual ~PlannerBase();
 
             PlannerBase(const PlannerBase& obj) = delete;

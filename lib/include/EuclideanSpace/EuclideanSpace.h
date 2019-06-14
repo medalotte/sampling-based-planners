@@ -56,7 +56,7 @@ namespace planner {
      */
     class EuclideanSpace {
     public:
-        EuclideanSpace(const uint32_t& dim);
+        explicit EuclideanSpace(const uint32_t& dim);
 
         EuclideanSpace(const EuclideanSpace& obj);
         EuclideanSpace &operator=(const EuclideanSpace& obj);
