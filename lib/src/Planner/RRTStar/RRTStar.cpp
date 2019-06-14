@@ -90,7 +90,7 @@ namespace planner {
                     rand_node->state.vals[i] = rand_restrictions[i](rand);
                 }
 
-                // resample when node do not meet constraint
+                // resample when node dose not meet constraint
                 if(constraint_->checkConstraintType(rand_node->state) == ConstraintType::NOENTRY) {
                     continue;
                 }
@@ -104,7 +104,7 @@ namespace planner {
 
             // add to list if new node meets constraint
             if(checkCollision(node_list[nearest_node_index], new_node)) {
-                // Find near nodes that are definition as formula using target dimension and number of total node
+                // Find nodes that exist on certain domain
                 auto near_node_indexes = findNearNodes(new_node, node_list);
 
                 // Choose parent node from near node

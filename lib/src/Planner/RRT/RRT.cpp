@@ -84,7 +84,7 @@ namespace planner {
                     rand_node->state.vals[i] = rand_restrictions[i](rand);
                 }
 
-                // resample when node do not meet constraint
+                // resample when node dose not meet constraint
                 if(constraint_->checkConstraintType(rand_node->state) == ConstraintType::NOENTRY) {
                     continue;
                 }
