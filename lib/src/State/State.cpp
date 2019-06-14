@@ -44,18 +44,6 @@ namespace planner {
         vals = _vals;
     }
 
-    State::State(const State& obj) :
-        vals(obj.vals) {
-    }
-
-    State &State::operator =(const State& obj) {
-        if(this != &obj) {
-            vals = obj.vals;
-        }
-
-        return *this;
-    }
-
     State::~State() {
     }
 

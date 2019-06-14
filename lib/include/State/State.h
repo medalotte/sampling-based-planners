@@ -49,10 +49,6 @@ namespace planner {
             vals(std::initializer_list<double>{_vals...}) {
         }
 
-        State(const State& obj);
-
-        State &operator =(const State& obj);
-
         ~State();
 
         uint32_t getDim() const;

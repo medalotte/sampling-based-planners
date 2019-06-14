@@ -40,11 +40,8 @@ namespace planner {
         double low;
         double high;
 
-        Bound() = default;
+        Bound();
         Bound(const double& low, const double& high);
-
-        Bound(const Bound& obj);
-        Bound &operator=(const Bound& obj);
 
         ~Bound();
 
@@ -57,9 +54,6 @@ namespace planner {
     class EuclideanSpace {
     public:
         explicit EuclideanSpace(const uint32_t& dim);
-
-        EuclideanSpace(const EuclideanSpace& obj);
-        EuclideanSpace &operator=(const EuclideanSpace& obj);
 
         ~EuclideanSpace();
 

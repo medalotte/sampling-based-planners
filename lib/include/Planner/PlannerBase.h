@@ -55,8 +55,10 @@ namespace planner {
             explicit PlannerBase(uint32_t dim);
             virtual ~PlannerBase();
 
-            PlannerBase(const PlannerBase& obj) = delete;
-            PlannerBase &operator =(const PlannerBase& obj) = delete;
+            PlannerBase(const PlannerBase&) = delete;
+            PlannerBase& operator =(const PlannerBase&) = delete;
+            PlannerBase(PlannerBase&&) noexcept = delete;
+            PlannerBase& operator =(PlannerBase&&) noexcept = delete;
 
             /**
              *  Execute path planning

@@ -25,6 +25,10 @@
 #include <EuclideanSpace/EuclideanSpace.h>
 
 namespace planner {
+    Bound::Bound() :
+        low(0), high(0) {
+    }
+
     Bound::Bound(const double& _low, const double& _high) {
         if(_high < _low) {
             throw std::runtime_error("[" + std::string(__PRETTY_FUNCTION__) + "] " +
@@ -33,19 +37,6 @@ namespace planner {
 
         high = _high;
         low  = _low;
-    }
-
-    Bound::Bound(const Bound& obj) :
-        low(obj.low),
-        high(obj.high) {
-    }
-
-    Bound &Bound::operator =(const Bound& obj) {
-        if(this != &obj) {
-            low  = obj.low;
-            high = obj.high;
-        }
-        return *this;
     }
 
     Bound::~Bound() {
@@ -62,27 +53,6 @@ namespace planner {
         }
         dim_    = dim;
         bounds_ = std::vector<Bound>(dim, Bound(0, 0));
-    }
-
-    EuclideanSpace::EuclideanSpace(const EuclideanSpace& obj) :
-        dim_(obj.getDim()) {
-        std::vector<Bound> bounds;
-        for(uint32_t di = 1; di <= dim_; di++) {
-            bounds.push_back(obj.getBound(di));
-        }
-        setBound(bounds);
-    }
-
-    EuclideanSpace &EuclideanSpace::operator=(const EuclideanSpace& obj) {
-        if(this != &obj) {
-            dim_ = obj.getDim();
-            std::vector<Bound> bounds;
-            for(uint32_t di = 1; di <= dim_; di++) {
-                bounds.push_back(obj.getBound(di));
-            }
-            setBound(bounds);
-        }
-        return *this;
     }
 
     EuclideanSpace::~EuclideanSpace() {
