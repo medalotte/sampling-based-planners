@@ -91,7 +91,7 @@ namespace planner {
             }
 
             // get index of node that nearest node from sampling node
-            size_t nearest_node_index = getNearestNodeIndex(rand_node, node_list);
+            auto nearest_node_index = getNearestNodeIndex(rand_node, node_list);
 
             // generate new node
             auto new_node = generateSteerNode(node_list[nearest_node_index], rand_node, expand_dist_);
@@ -135,10 +135,10 @@ namespace planner {
 
     size_t RRT::getNearestNodeIndex(const std::shared_ptr<Node>& target_node,
                                     const std::vector<std::shared_ptr<Node>>& node_list) const {
-        size_t min_dist_index = 0;
-        double min_dist = std::numeric_limits<double>::max();
+        auto min_dist_index = 0;
+        auto min_dist       = std::numeric_limits<double>::max();
         for(size_t i = 0; i < node_list.size(); i++) {
-            double dist = node_list[i]->state.distanceFrom(target_node->state);
+            auto dist = node_list[i]->state.distanceFrom(target_node->state);
             if(dist < min_dist) {
                 min_dist = dist;
                 min_dist_index = i;
@@ -160,14 +160,14 @@ namespace planner {
             auto src = src_node->state;
             auto dst = dst_node->state;
 
-            double dim_expand_dist = expand_dist;
+            auto dim_expand_dist = expand_dist;
             for(int i = constraint_->space.getDim() - 1; 0 < i; i--) {
-                double dist_delta_dim = dst.vals.back() - src.vals.back();
+                auto dist_delta_dim = dst.vals.back() - src.vals.back();
                 src.vals.pop_back();
                 dst.vals.pop_back();
-                double dist_lower_dim = (i != 1) ? dst.distanceFrom(src) : dst.vals.front() - src.vals.front();
+                auto dist_lower_dim = (i != 1) ? dst.distanceFrom(src) : dst.vals.front() - src.vals.front();
 
-                double t = std::atan2(dist_delta_dim, dist_lower_dim);
+                auto t = std::atan2(dist_delta_dim, dist_lower_dim);
 
                 steered_node->state.vals[i] += dim_expand_dist * std::sin(t);
                 dim_expand_dist              = dim_expand_dist * std::cos(t);
@@ -182,7 +182,7 @@ namespace planner {
                              const std::shared_ptr<Node>& dst_node) const {
 
         const auto vec = dst_node->state - src_node->state;
-        for(double ratio_i = 0; ratio_i < 1.0; ratio_i += 0.1) {
+        for(auto ratio_i = 0; ratio_i < 1.0; ratio_i += 0.1) {
             auto target = src_node->state + (vec * ratio_i);
             if(constraint_->checkConstraintType(target) == ConstraintType::NOENTRY) {
                 return false;
