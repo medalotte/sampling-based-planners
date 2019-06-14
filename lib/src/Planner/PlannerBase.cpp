@@ -35,8 +35,8 @@ namespace planner {
 
         void PlannerBase::setProblemDefinition(const std::shared_ptr<ConstraintBase>& constraint) {
             if(constraint->getDim() != constraint_->getDim()) {
-                throw std::runtime_error("[" + std::string(__PRETTY_FUNCTION__) + "] " +
-                                         "Problem definitions are invalid");
+                throw std::invalid_argument("[" + std::string(__PRETTY_FUNCTION__) + "] " +
+                                            "Problem definitions are invalid");
             }
             constraint_ = constraint;
         }

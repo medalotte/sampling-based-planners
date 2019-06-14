@@ -70,8 +70,8 @@ namespace planner {
     void PointCloudConstraint::set(const std::vector<Hypersphere>& constraint) {
         for(const auto& data : constraint) {
             if(getDim() != data.getState().getDim()) {
-                throw std::runtime_error("[" + std::string(__PRETTY_FUNCTION__) + "] " +
-                                         "State dimension is invalid");
+                throw std::invalid_argument("[" + std::string(__PRETTY_FUNCTION__) + "] " +
+                                            "State dimension is invalid");
             }
         }
 
@@ -84,8 +84,8 @@ namespace planner {
 
     ConstraintType PointCloudConstraint::checkConstraintType(const State& state) const {
         if(getDim() != state.getDim()) {
-            throw std::runtime_error("[" + std::string(__PRETTY_FUNCTION__) + "] " +
-                                     "State dimension is invalid");
+            throw std::invalid_argument("[" + std::string(__PRETTY_FUNCTION__) + "] " +
+                                        "State dimension is invalid");
         }
 
         for(const auto& data : constraint_) {

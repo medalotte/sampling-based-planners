@@ -80,7 +80,7 @@ namespace planner {
          *  @space:      target space
          *  @constraint: constraint that express set of hypersphere
          *               if dimension of hypersphere different from dimension of space,
-         *               this constructor throw std::runtime_error
+         *               this constructor throw std::invalid_argument
          */
         PointCloudConstraint(const EuclideanSpace&           space,
                              const std::vector<Hypersphere>& constraint);

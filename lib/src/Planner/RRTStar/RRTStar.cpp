@@ -46,8 +46,8 @@ namespace planner {
 
     void RRTStar::setGoalSamplingRate(const double& goal_sampling_rate) {
         if(!(0.0 <= goal_sampling_rate && goal_sampling_rate <= 1.0)) {
-            throw std::runtime_error("[" + std::string(__PRETTY_FUNCTION__) + "] " +
-                                     "Rate of Sampling goal state is invalid");
+            throw std::invalid_argument("[" + std::string(__PRETTY_FUNCTION__) + "] " +
+                                        "Rate of Sampling goal state is invalid");
         }
 
         goal_sampling_rate_ = goal_sampling_rate;

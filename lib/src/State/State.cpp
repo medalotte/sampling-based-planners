@@ -28,8 +28,8 @@ namespace planner {
 
     State::State(uint32_t dim) {
         if(dim == 0) {
-            throw std::runtime_error("[" + std::string(__PRETTY_FUNCTION__) + "] " +
-                                     "Can not set zero-dimension state");
+            throw std::invalid_argument("[" + std::string(__PRETTY_FUNCTION__) + "] " +
+                                        "Can not set zero-dimension state");
         }
 
         vals = std::vector<double>(dim);
@@ -37,8 +37,8 @@ namespace planner {
 
     State::State(const std::vector<double>& _vals) {
         if(_vals.size() == 0) {
-            throw std::runtime_error("[" + std::string(__PRETTY_FUNCTION__) + "] " +
-                                     "Can not set zero-dimension state");
+            throw std::invalid_argument("[" + std::string(__PRETTY_FUNCTION__) + "] " +
+                                        "Can not set zero-dimension state");
         }
 
         vals = _vals;
@@ -57,8 +57,8 @@ namespace planner {
 
     double State::dot(const State& other) const {
         if(vals.size() != other.vals.size()) {
-            throw std::runtime_error("[" + std::string(__PRETTY_FUNCTION__) + "] " +
-                                     "Can not calculate because dimension is different from");
+            throw std::invalid_argument("[" + std::string(__PRETTY_FUNCTION__) + "] " +
+                                        "Can not calculate because dimension is different from");
         }
 
         double ret = 0;
@@ -101,6 +101,11 @@ namespace planner {
     }
 
     State State::operator +(const State& other) const {
+        if(vals.size() != other.vals.size()) {
+            throw std::invalid_argument("[" + std::string(__PRETTY_FUNCTION__) + "] " +
+                                        "Can not calculate because dimension is different from");
+        }
+
         State ret = *this;
         for(size_t i = 0; i < ret.getDim(); i++) {
             ret.vals[i] += other.vals[i];
@@ -110,6 +115,11 @@ namespace planner {
     }
 
     State State::operator -(const State& other) const {
+        if(vals.size() != other.vals.size()) {
+            throw std::invalid_argument("[" + std::string(__PRETTY_FUNCTION__) + "] " +
+                                        "Can not calculate because dimension is different from");
+        }
+
         State ret = *this;
         for(size_t i = 0; i < ret.getDim(); i++) {
             ret.vals[i] -= other.vals[i];
@@ -119,6 +129,11 @@ namespace planner {
     }
 
     bool State::operator ==(const State& other) const {
+        if(vals.size() != other.vals.size()) {
+            throw std::invalid_argument("[" + std::string(__PRETTY_FUNCTION__) + "] " +
+                                        "Can not calculate because dimension is different from");
+        }
+
         for(size_t i = 0; i < getDim(); i++) {
             if(vals[i] != other.vals[i]) {
                 return false;
@@ -129,6 +144,11 @@ namespace planner {
     }
 
     bool State::operator !=(const State& other) const {
+        if(vals.size() != other.vals.size()) {
+            throw std::invalid_argument("[" + std::string(__PRETTY_FUNCTION__) + "] " +
+                                        "Can not calculate because dimension is different from");
+        }
+
         for(size_t i = 0; i < getDim(); i++) {
             if(vals[i] != other.vals[i]) {
                 return true;

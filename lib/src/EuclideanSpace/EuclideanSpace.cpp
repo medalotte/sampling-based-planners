@@ -31,8 +31,8 @@ namespace planner {
 
     Bound::Bound(const double& _low, const double& _high) {
         if(_high < _low) {
-            throw std::runtime_error("[" + std::string(__PRETTY_FUNCTION__) + "] " +
-                                     "Bound is invalid");
+            throw std::invalid_argument("[" + std::string(__PRETTY_FUNCTION__) + "] " +
+                                        "Bound is invalid");
         }
 
         high = _high;
@@ -48,8 +48,8 @@ namespace planner {
 
     EuclideanSpace::EuclideanSpace(const uint32_t& dim) {
         if(dim == 0) {
-            throw std::runtime_error("[" + std::string(__PRETTY_FUNCTION__) + "] " +
-                                     "Dimension is invalid");
+            throw std::invalid_argument("[" + std::string(__PRETTY_FUNCTION__) + "] " +
+                                        "Dimension is invalid");
         }
         dim_    = dim;
         bounds_ = std::vector<Bound>(dim, Bound(0, 0));
@@ -64,16 +64,16 @@ namespace planner {
 
     void EuclideanSpace::setBound(std::vector<Bound>& bounds) {
         if(bounds.size() != dim_) {
-            throw std::runtime_error("[" + std::string(__PRETTY_FUNCTION__) + "] " +
-                                     "Condition of bound is invalid");
+            throw std::invalid_argument("[" + std::string(__PRETTY_FUNCTION__) + "] " +
+                                        "Condition of bound is invalid");
         }
         bounds_ = bounds;
     }
 
     Bound EuclideanSpace::getBound(const uint32_t& dim) const {
         if(!(0 < dim && dim <= dim_)) {
-            throw std::runtime_error("[" + std::string(__PRETTY_FUNCTION__) + "] " +
-                                     "Dimention is out of range");
+            throw std::invalid_argument("[" + std::string(__PRETTY_FUNCTION__) + "] " +
+                                        "Dimention is out of range");
         }
         return bounds_[dim - 1];
     }
