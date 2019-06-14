@@ -45,17 +45,17 @@ namespace planner {
         };
 
     public:
-        RRTStar(uint32_t dim,
-                uint32_t max_sampling_num   = 1000,
-                double   goal_sampling_rate = 0.25,
-                double   expand_dist        = 1.0,
-                double   R                  = 10.0);
+        RRTStar(const uint32_t& dim,
+                const uint32_t& max_sampling_num   = 1000,
+                const double&   goal_sampling_rate = 0.25,
+                const double&   expand_dist        = 1.0,
+                const double&   R                  = 10.0);
         ~RRTStar();
 
-        void setMaxSamplingNum(uint32_t max_sampling_num) noexcept;
-        void setGoalSamplingRate(double goal_sampling_rate);
-        void setExpandDist(double expand_dist) noexcept;
-        void setR(double R) noexcept;
+        void setMaxSamplingNum(const uint32_t& max_sampling_num);
+        void setGoalSamplingRate(const double& goal_sampling_rate);
+        void setExpandDist(const double& expand_dist);
+        void setR(const double& R);
 
         bool solve(const State& start, const State& goal) override;
 

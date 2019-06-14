@@ -25,11 +25,11 @@
 #include <Planner/RRTStar/RRTStar.h>
 
 namespace planner {
-    RRTStar::RRTStar(uint32_t dim,
-                     uint32_t max_sampling_num,
-                     double   goal_sampling_rate,
-                     double   expand_dist,
-                     double   R) :
+    RRTStar::RRTStar(const uint32_t& dim,
+                     const uint32_t& max_sampling_num,
+                     const double&   goal_sampling_rate,
+                     const double&   expand_dist,
+                     const double&   R) :
         base::PlannerBase(dim),
         max_sampling_num_(max_sampling_num),
         expand_dist_(expand_dist),
@@ -40,11 +40,11 @@ namespace planner {
     RRTStar::~RRTStar() {
     }
 
-    void RRTStar::setMaxSamplingNum(uint32_t max_sampling_num) noexcept {
+    void RRTStar::setMaxSamplingNum(const uint32_t& max_sampling_num) {
         max_sampling_num_ = max_sampling_num;
     }
 
-    void RRTStar::setGoalSamplingRate(double goal_sampling_rate) {
+    void RRTStar::setGoalSamplingRate(const double& goal_sampling_rate) {
         if(!(0.0 <= goal_sampling_rate && goal_sampling_rate <= 1.0)) {
             throw std::runtime_error("[" + std::string(__PRETTY_FUNCTION__) + "] " +
                                      "Rate of Sampling goal state is invalid");
@@ -53,11 +53,11 @@ namespace planner {
         goal_sampling_rate_ = goal_sampling_rate;
     }
 
-    void RRTStar::setExpandDist(double expand_dist) noexcept {
+    void RRTStar::setExpandDist(const double& expand_dist) {
         expand_dist_ = expand_dist;
     }
 
-    void RRTStar::setR(double R) noexcept {
+    void RRTStar::setR(const double& R) {
         R_ = R;
     }
 
