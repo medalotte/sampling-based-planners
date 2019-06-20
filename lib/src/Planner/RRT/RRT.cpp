@@ -181,7 +181,7 @@ namespace planner {
                              const std::shared_ptr<Node>& dst_node) const {
 
         const auto vec = dst_node->state - src_node->state;
-        for(auto ratio_i = 0; ratio_i < 1.0; ratio_i += 0.1) {
+        for(auto ratio_i = 0.0; ratio_i < 1.0; ratio_i += 0.1) {
             auto target = src_node->state + (vec * ratio_i);
             if(constraint_->checkConstraintType(target) == ConstraintType::NOENTRY) {
                 return false;
