@@ -29,5 +29,6 @@
 #include <Constraint/SemanticSegmentConstraint/SemanticSegmentConstraint.h>
 #include <Planner/RRT/RRT.h>
 #include <Planner/RRTStar/RRTStar.h>
+#include <Planner/InformedRRTStar/InformedRRTStar.h>
 
 #endif /* LIB_INCLUDE_PLANNER_H_ */
