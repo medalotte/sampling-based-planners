@@ -62,6 +62,22 @@ namespace {
         }
     };
 
+    class InformedRRTStarParam : public cvlib::YAMLHelper::Param {
+    public:
+        int    max_sampling_num;
+        double goal_sampling_rate;
+        double expand_dist;
+        double R;
+        double goal_region_radius;
+        void read(const cv::FileNode& node) override {
+            max_sampling_num   = (int)node["max_sampling_num"];
+            goal_sampling_rate = (double)node["goal_sampling_rate"];
+            expand_dist        = (double)node["expand_dist"];
+            R                  = (double)node["R"];
+            goal_region_radius = (double)node["goal_region_radius"];
+        }
+    };
+
     class StateParam : public cvlib::YAMLHelper::Param {
     public:
         double x;

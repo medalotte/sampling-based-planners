@@ -35,10 +35,12 @@ int main() {
         std::unique_ptr<pln::base::PlannerBase>    planner;
         std::shared_ptr<pln::base::ConstraintBase> constraint;
 
-        RRTParam     rrt_param;
-        RRTStarParam rrt_star_param;
-        cvlib::YAMLHelper::readStruct(rrt_param,      PARAM_YAML_FILE_PATH, "RRT");
-        cvlib::YAMLHelper::readStruct(rrt_star_param, PARAM_YAML_FILE_PATH, "RRTStar");
+        RRTParam             rrt_param;
+        RRTStarParam         rrt_star_param;
+        InformedRRTStarParam informed_rrt_star_param;
+        cvlib::YAMLHelper::readStruct(rrt_param,               PARAM_YAML_FILE_PATH, "RRT");
+        cvlib::YAMLHelper::readStruct(rrt_star_param,          PARAM_YAML_FILE_PATH, "RRTStar");
+        cvlib::YAMLHelper::readStruct(informed_rrt_star_param, PARAM_YAML_FILE_PATH, "InformedRRTStar");
 
         StateParam world_size, start_state, goal_state;
         cvlib::YAMLHelper::readStruct(world_size,  PARAM_YAML_FILE_PATH, "WorldSize");
@@ -143,6 +145,7 @@ int main() {
                     std::cout << "[2] Please choose method of path planning" << std::endl;
                     std::cout << "1. RRT" << std::endl;
                     std::cout << "2. RRT*" << std::endl;
+                    std::cout << "3. Informed-RRT*" << std::endl;
                     std::cout << "q. quit" << std::endl << std::endl;
                     std::cout << "mode : ";
                     std::cin  >> mode;
@@ -162,6 +165,15 @@ int main() {
                                                                      rrt_star_param.goal_sampling_rate,
                                                                      rrt_star_param.expand_dist,
                                                                      rrt_star_param.R);
+                            return;
+                        }
+                        case '3': {
+                            planner = std::make_unique<pln::InformedRRTStar>(DIM,
+                                                                             informed_rrt_star_param.max_sampling_num,
+                                                                             informed_rrt_star_param.goal_sampling_rate,
+                                                                             informed_rrt_star_param.expand_dist,
+                                                                             informed_rrt_star_param.R,
+                                                                             informed_rrt_star_param.goal_region_radius);
                             return;
                         }
                         case 'q': {
@@ -232,6 +244,8 @@ int main() {
                 cv::waitKey(0);
                 cv::destroyWindow("world");
                 cv::imwrite("./result.png", world);
+
+                std::cout << "total cost : " << planner->getResultCost() << std::endl;
             }
             else {
                 std::cout << "Could not find path" << std::endl;

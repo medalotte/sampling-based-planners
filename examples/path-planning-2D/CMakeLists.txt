@@ -33,6 +33,8 @@ else()
   message(FATAL_ERROR "The compiler ${CMAKE_CXX_COMPILER} has no C++14 support. Please use a different C++ compiler.")
 endif()
 
+find_package(Eigen3 3.0.0 REQUIRED)
+
 find_package(OpenCV 3.0 QUIET)
 if(NOT OpenCV_FOUND)
   message(FATAL_ERROR "OpenCV > 3.0 not found.")
@@ -46,6 +48,7 @@ include_directories(
   ${LIBRARIES_DIR}/include
   ${EXTARNAL_REPOSITORY_DIR}/OpenCV-YAMLHelper/include
   ${OpenCV_INCLUDE_DIRS}
+  ${EIGEN3_INCLUDE_DIR}
   )
 
 link_directories(
@@ -58,6 +61,7 @@ add_executable(${PROJECT_NAME}
   )
 
 target_link_libraries(${PROJECT_NAME}
-  planner
+  ${EIGEN3_LIBS}
   ${OpenCV_LIBS}
+  planner
   )
