@@ -33,9 +33,15 @@ else()
   message(FATAL_ERROR "The compiler ${CMAKE_CXX_COMPILER} has no C++14 support. Please use a different C++ compiler.")
 endif()
 
+#--- -fPIC
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
+find_package(Eigen3 3.0.0 REQUIRED)
+
 #--- Build libplanner.so
 include_directories(
   ${PROJECT_SOURCE_DIR}/include
+  ${EIGEN3_INCLUDE_DIR}
   )
 
 add_library(${PROJECT_NAME} SHARED
@@ -46,4 +52,9 @@ add_library(${PROJECT_NAME} SHARED
   ${PROJECT_SOURCE_DIR}/src/Constraint/PointCloudConstraint/PointCloudConstraint.cpp
   ${PROJECT_SOURCE_DIR}/src/Planner/PlannerBase.cpp
   ${PROJECT_SOURCE_DIR}/src/Planner/RRT/RRT.cpp
-  ${PROJECT_SOURCE_DIR}/src/Planner/RRTStar/RRTStar.cpp)
+  ${PROJECT_SOURCE_DIR}/src/Planner/RRTStar/RRTStar.cpp
+  ${PROJECT_SOURCE_DIR}/src/Planner/InformedRRTStar/InformedRRTStar.cpp)
+
+target_link_libraries(${PROJECT_NAME}
+  ${EIGEN3_LIBS}
+  )
