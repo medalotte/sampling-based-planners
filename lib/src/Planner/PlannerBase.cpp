@@ -45,6 +45,10 @@ namespace planner {
             return result_;
         }
 
+        double PlannerBase::getResultCost() const {
+            return result_cost_;
+        }
+
         const std::vector<std::shared_ptr<NodeBase>>& PlannerBase::getNodeListRef() const {
             return node_list_;
         }

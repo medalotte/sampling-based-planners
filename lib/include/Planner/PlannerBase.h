@@ -73,10 +73,13 @@ namespace planner {
 
             const std::vector<State>& getResultRef() const;
 
+            double getResultCost() const;
+
             const std::vector<std::shared_ptr<NodeBase>>& getNodeListRef() const;
 
         protected:
             std::vector<State>                     result_;
+            double                                 result_cost_;
             std::vector<std::shared_ptr<NodeBase>> node_list_;
             std::shared_ptr<ConstraintBase>        constraint_;
         };
