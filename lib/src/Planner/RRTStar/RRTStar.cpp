@@ -127,6 +127,8 @@ namespace planner {
         }
         else {
             std::shared_ptr<base::NodeBase> result_node = node_list[best_last_index];
+
+            result_cost_ = node_list[best_last_index]->cost + result_node->state.distanceFrom(goal);
             if(result_node->state != goal) {
                 result_.push_back(goal);
             }

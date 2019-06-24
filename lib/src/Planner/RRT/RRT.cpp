@@ -116,14 +116,22 @@ namespace planner {
         // store the result
         result_.clear();
         std::shared_ptr<base::NodeBase> result_node = node_list.back();
+
+        auto cost = 0.0;
         while(true) {
             result_.insert(result_.begin(), result_node->state);
             if(result_node->parent == nullptr) {
+                cost += result_node->state.distanceFrom(start);
                 break;
+            }
+            else {
+                cost += result_node->state.distanceFrom(result_node->parent->state);
             }
 
             result_node = result_node->parent;
         }
+
+        result_cost_ = cost;
 
         // store the node list
         node_list_.clear();
