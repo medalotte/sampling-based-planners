@@ -1,21 +1,19 @@
 # sampling-based-planners
-Pure C++ implementation of RRT, RRT*, and Informed-RRT* as a shared library which are incremental sampling-based path planning methods, and it supports any dimensions
+C++ implementation of RRT, RRT*, and Informed-RRT* as a shared library which are incremental sampling-based path planning methods, and it supports any dimensions
 
 #### TODO
-- Implement Informed-RRT* (Sorry, it has not been implemented yet)
 - Implement `examples/path-planner-3D`
     - adopt python API (Python.h) and use matplotlib in order to plot 3D graph
 
 ## Features
 - Provided as a shared library usable in **C++14** or higher
 - You can execute at **any dimensions** without recompiling the shared library
-- **Pure C++ implementation**
-    - Implemented without dependent libraries such as Boost, Eigen, OpenCV, and so on
 
 ## Requirements
 The following software packages are required for building the shared library
 - A C++ compiler with **C++14** or higher support
 - CMake **3.0** or higher
+- Eigen **3.0** or higher
 
 If you would like to compile the example programs, add the following:
 - OpenCV **3.0** or higher
@@ -138,6 +136,11 @@ Execute path planning on two-dimensional space
     <img src="assets/result_2D_RRTStar_circle.png" alt="result_2D_RRTStar_circle.png">
 </div>
 
+##### Informed-RRT*
+<div style="text-align: center;">
+    <img src="assets/result_2D_InformedRRTStar_circle.png" alt="result_2D_InformedRRTStar_circle.png">
+</div>
+
 #### Pattern2. Constraint using image
 ##### RRT
 <div style="text-align: center;">
@@ -149,10 +152,17 @@ Execute path planning on two-dimensional space
     <img src="assets/result_2D_RRTStar_img.png" alt="result_2D_RRTStar_img.png">
 </div>
 
+##### Informed-RRT*
+<div style="text-align: center;">
+    <img src="assets/result_2D_InformedRRTStar_img.png" alt="result_2D_InformedRRTStar_img.png">
+</div>
+
 ## References
 [Steven M. LaValle, "Rapidly-exploring random trees: A new tool for path planning," Technical Report. Computer Science Department, Iowa State University (TR 98–11).](http://msl.cs.uiuc.edu/~lavalle/papers/Lav98c.pdf)
 
 [S. Karaman and E. Frazzoli, "Incremental Sampling-based Algorithms for Optimal Motion Planning," arXiv:1005.0416, May. 2010.](https://arxiv.org/pdf/1005.0416.pdf)
+
+[J. D. Gammell, S. S. Srinivasa, and T. D. Barfoot, “Informed RRT*: Optimal sampling-based path planning focused via direct sampling of an admissible ellipsoidal heuristic,” in 2014 IEEE/RSJ International Conference on Intelligent Robots and Systems, 2014, pp. 2997–3004.](https://ieeexplore.ieee.org/document/6942976/?arnumber=6942976)
 
 ## License
 MIT
