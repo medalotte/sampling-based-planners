@@ -1,23 +1,30 @@
 %YAML:1.2
 ---
 RRT:
-  max_sampling_num:   2000
+  max_sampling_num:   10000
   goal_sampling_rate: 0.05
-  expand_dist:        50.0
+  expand_dist:        30.0
 
 RRTStar:
-  max_sampling_num:   2000
+  max_sampling_num:   5000
   goal_sampling_rate: 0.25
-  expand_dist:        100.0
+  expand_dist:        30.0
   R:                  2000
 
+InformedRRTStar:
+  max_sampling_num:   5000
+  goal_sampling_rate: 0.25
+  expand_dist:        30.0
+  R:                  2000
+  goal_region_radius: 100.0
+
 StartState:
-  x: 100.0
+  x: 50.0
   y: 50.0
 
 GoalState:
   x: 900.0
-  y: 950.0
+  y: 900.0
 
 WorldSize:
   x: 1000.0
@@ -26,24 +33,68 @@ WorldSize:
 ConstraintImage: "./constraint1.png"
 
 Obstacles:
-  num: 5
+  num: 16
   Obstacle0:
     x:      350.0
-    y:      100.0
-    radius: 100.0
+    y:      300.0
+    radius: 80.0
   Obstacle1:
-    x:      700.0
-    y:      10.0
-    radius: 200.0
+    x:      789.0
+    y:      680.0
+    radius: 80.0
   Obstacle2:
-    x:      500.0
-    y:      500.0
-    radius: 300.0
-  Obstacle3:
-    x:      100.0
-    y:      500.0
+    x:      550.0
+    y:      450.0
     radius: 100.0
+  Obstacle3:
+    x:      400.0
+    y:      500.0
+    radius: 50.0
   Obstacle4:
     x:      900.0
     y:      800.0
+    radius: 60.0
+  Obstacle5:
+    x:      100.0
+    y:      500.0
     radius: 50.0
+  Obstacle6:
+    x:      600.0
+    y:      300.0
+    radius: 70.0
+  Obstacle7:
+    x:      600.0
+    y:      680.0
+    radius: 100.0
+  Obstacle8:
+    x:      140.0
+    y:      140.0
+    radius: 80.0
+  Obstacle9:
+    x:      609.0
+    y:      93.0
+    radius: 90.0
+  Obstacle10:
+    x:      300.0
+    y:      100.0
+    radius: 50.0
+  Obstacle11:
+    x:      100.0
+    y:      300.0
+    radius: 100.0
+  Obstacle12:
+    x:      720.0
+    y:      902.0
+    radius: 60.0
+  Obstacle13:
+    x:      450.0
+    y:      209.0
+    radius: 79.0
+  Obstacle14:
+    x:      580.0
+    y:      910.0
+    radius: 20.0
+  Obstacle15:
+    x:      409.0
+    y:      690.0
+    radius: 60.0
