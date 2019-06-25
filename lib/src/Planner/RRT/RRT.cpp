@@ -97,7 +97,7 @@ namespace planner {
             auto new_node = generateSteerNode(node_list[nearest_node_index], rand_node, expand_dist_);
 
             // add to list if new node meets constraint
-            if(checkCollision(node_list[nearest_node_index], new_node)) {
+            if(constraint_->checkCollision(node_list[nearest_node_index]->state, new_node->state)) {
                 node_list.push_back(new_node);
 
                 // terminate processing if distance between new node and goal state is less than 'expand_dist'
@@ -183,19 +183,5 @@ namespace planner {
         }
 
         return steered_node;
-    }
-
-    bool RRT::checkCollision(const std::shared_ptr<Node>& src_node,
-                             const std::shared_ptr<Node>& dst_node) const {
-
-        const auto vec = dst_node->state - src_node->state;
-        for(auto ratio_i = 0.0; ratio_i < 1.0; ratio_i += 0.1) {
-            auto target = src_node->state + (vec * ratio_i);
-            if(constraint_->checkConstraintType(target) == ConstraintType::NOENTRY) {
-                return false;
-            }
-        }
-
-        return true;
     }
 }

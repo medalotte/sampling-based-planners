@@ -37,6 +37,12 @@ namespace planner {
             return space.getDim();
         }
 
+        bool ConstraintBase::checkCollision(const State& src,
+                                            const State& dst) const {
+            return (checkConstraintType(src) == ConstraintType::ENTAERABLE &&
+                    checkConstraintType(dst) == ConstraintType::ENTAERABLE) ? true : false;
+        }
+
         ConstraintType ConstraintBase::checkConstraintType(const State &state) const {
             for(size_t i = 0; i < state.getDim(); i++) {
                 auto bound = space.getBound(i + 1);

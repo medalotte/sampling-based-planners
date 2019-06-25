@@ -68,6 +68,9 @@ namespace planner {
 
         const std::vector<uint32_t>& getEachDimSizeRef() const;
 
+        bool checkCollision(const State& src,
+                            const State& dst) const override;
+
         ConstraintType checkConstraintType(const State& state) const override;
 
     private:

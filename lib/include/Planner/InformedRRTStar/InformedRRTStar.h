@@ -91,16 +91,6 @@ namespace planner {
                                                 const double&                expand_dist) const;
 
         /**
-         *  Check a constraint between 'src_node' and 'dst_node'
-         *  @src_node: source node
-         *  @dst_node: destination node
-         *  @Return:   If the path of between 'src_node' and 'dst_node' entry ConstraintType::NOENTRY,
-         *             return false
-         */
-        bool checkCollision(const std::shared_ptr<Node>& src_node,
-                            const std::shared_ptr<Node>& dst_node) const;
-
-        /**
          *  Find near nodes in 'node_list'
          *  Near nodes are definition as formula using target dimension and number of total node
          *  @target_node: target node

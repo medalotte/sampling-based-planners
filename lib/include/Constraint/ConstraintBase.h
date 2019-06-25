@@ -59,6 +59,16 @@ namespace planner {
             uint32_t getDim() const;
 
             /**
+             *  Check whether collision occurred between src and dst
+             *  @src:    source state
+             *  @dst:    destination state
+             *  @Return: If the path of between 'src' and 'dst' entry ConstraintType::NOENTRY,
+             *           return false
+             */
+            virtual bool checkCollision(const State& src,
+                                        const State& dst) const;
+
+            /**
              *  Check constraint at given state
              *  @state: target state
              *  @Return: type of constraint at target state

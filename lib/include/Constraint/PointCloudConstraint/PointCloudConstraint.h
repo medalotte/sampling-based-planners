@@ -25,6 +25,9 @@
 #ifndef LIB_INCLUDE_CONSTRAINT_POINTCLOUDCONSTRAINT_POINTCLOUDCONSTRAINT_H_
 #define LIB_INCLUDE_CONSTRAINT_POINTCLOUDCONSTRAINT_POINTCLOUDCONSTRAINT_H_
 
+#include <algorithm>
+#include <numeric>
+
 #include <State/State.h>
 #include <Constraint/ConstraintBase.h>
 
@@ -90,6 +93,9 @@ namespace planner {
         void set(const std::vector<Hypersphere>& constraint);
 
         const std::vector<Hypersphere>& getRef() const;
+
+        bool checkCollision(const State& src,
+                            const State& dst) const override;
 
         ConstraintType checkConstraintType(const State& state) const override;
 

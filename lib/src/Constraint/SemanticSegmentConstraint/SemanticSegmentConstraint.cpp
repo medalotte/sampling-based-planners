@@ -53,6 +53,24 @@ namespace planner {
         return each_dim_size_;
     }
 
+    bool SemanticSegmentConstraint::checkCollision(const State& src,
+                                                   const State& dst) const {
+        if(src.getDim() != dst.getDim() || getDim() != src.getDim()) {
+            throw std::invalid_argument("[" + std::string(__PRETTY_FUNCTION__) + "] " +
+                                        "State dimension is invalid");
+        }
+
+        // TODO: calc appropriate sampling period
+        const auto vec = dst - src;
+        for(auto ratio_i = 0.0; ratio_i < 1.0; ratio_i += 0.1) {
+            auto target = src + (vec * ratio_i);
+            if(checkConstraintType(target) == ConstraintType::NOENTRY) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     ConstraintType SemanticSegmentConstraint::checkConstraintType(const State& state) const {
         if(getDim() != state.getDim()) {
             throw std::invalid_argument("[" + std::string(__PRETTY_FUNCTION__) + "] " +

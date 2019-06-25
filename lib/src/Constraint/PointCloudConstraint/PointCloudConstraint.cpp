@@ -82,10 +82,72 @@ namespace planner {
         return constraint_;
     }
 
+    bool PointCloudConstraint::checkCollision(const State& src,
+                                              const State& dst) const {
+        if(src.getDim() != dst.getDim() || getDim() != src.getDim()) {
+            throw std::invalid_argument("[" + std::string(__PRETTY_FUNCTION__) + "] " +
+                                        "State dimension is invalid");
+        }
+
+        // return NOENTRY Type if the state is out of range
+        for(size_t i = 0; i < getDim(); i++) {
+            auto bound = space.getBound(i + 1);
+
+            // return NOENTRY Type if the state is out of range
+            if(src.vals[i] < bound.low || bound.high < src.vals[i] ||
+               dst.vals[i] < bound.low || bound.high < dst.vals[i]) {
+                return false;
+            }
+        }
+
+        auto dist = src.distanceFrom(dst);
+        for(const auto& data : constraint_) {
+            std::vector<double> sides{dist,
+                                      src.distanceFrom(data.getState()),
+                                      dst.distanceFrom(data.getState())};
+            std::sort(sides.begin(), sides.end());
+
+            // calc most minimum distance between a state on the line and the center of the hypersphere
+            auto min_dist_from_line = std::numeric_limits<double>::max();
+
+            // when triangle is sharp or most long side is "src-dst"
+            if(sides[2] == dist ||
+               std::pow(sides[2], 2) <= std::pow(sides[1], 2) + std::pow(sides[0], 2)) {
+                // calc area of ​​the triangle by using Heron's formula
+                auto s = std::accumulate(sides.begin(), sides.end(), 0.0) / 2.0;
+                auto S = std::sqrt(s * (s - sides[0]) * (s - sides[1]) * (s - sides[2]));
+
+                min_dist_from_line = (S * 2) / dist;
+            }
+            else {
+                for(const auto& side : sides) {
+                    if(side != dist) {
+                        min_dist_from_line = std::min(min_dist_from_line, side);
+                    }
+                }
+            }
+
+            if(min_dist_from_line <= data.getRadius()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     ConstraintType PointCloudConstraint::checkConstraintType(const State& state) const {
         if(getDim() != state.getDim()) {
             throw std::invalid_argument("[" + std::string(__PRETTY_FUNCTION__) + "] " +
                                         "State dimension is invalid");
+        }
+
+        // return NOENTRY Type if the state is out of range
+        for(size_t i = 0; i < getDim(); i++) {
+            auto bound = space.getBound(i + 1);
+
+            // return NOENTRY Type if the state is out of range
+            if(state.vals[i] < bound.low || bound.high < state.vals[i]) {
+                return ConstraintType::NOENTRY;
+            }
         }
 
         for(const auto& data : constraint_) {

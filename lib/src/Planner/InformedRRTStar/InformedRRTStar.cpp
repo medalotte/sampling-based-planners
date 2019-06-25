@@ -158,7 +158,7 @@ namespace planner {
             auto new_node = generateSteerNode(node_list[nearest_node_index], rand_node, expand_dist_);
 
             // add to list if new node meets constraint
-            if(checkCollision(node_list[nearest_node_index], new_node)) {
+            if(constraint_->checkCollision(node_list[nearest_node_index]->state, new_node->state)) {
                 // Find nodes that exist on certain domain
                 auto near_node_indexes = findNearNodes(new_node, node_list);
 
@@ -259,20 +259,6 @@ namespace planner {
         return steered_node;
     }
 
-    bool InformedRRTStar::checkCollision(const std::shared_ptr<Node>& src_node,
-                                         const std::shared_ptr<Node>& dst_node) const {
-
-        const auto vec = dst_node->state - src_node->state;
-        for(auto ratio_i = 0.0; ratio_i < 1.0; ratio_i += 0.1) {
-            auto target = src_node->state + (vec * ratio_i);
-            if(constraint_->checkConstraintType(target) == ConstraintType::NOENTRY) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
     std::vector<size_t> InformedRRTStar::findNearNodes(const std::shared_ptr<Node>&              target_node,
                                                        const std::vector<std::shared_ptr<Node>>& node_list) const {
         std::vector<size_t> near_node_indexes;
@@ -300,7 +286,7 @@ namespace planner {
             auto dist = target_node->state.distanceFrom(node_list[near_node_index]->state);
             auto cost = node_list[near_node_index]->cost + dist;
             if(cost < min_cost) {
-                if(checkCollision(target_node, node_list[near_node_index])) {
+                if(constraint_->checkCollision(target_node->state, node_list[near_node_index]->state)) {
                     min_cost_parent_node = node_list[near_node_index];
                     min_cost             = cost;
                 }
@@ -322,7 +308,7 @@ namespace planner {
             auto near_node = node_list[near_node_index];
             auto new_cost  = new_node->cost + near_node->state.distanceFrom(new_node->state);
             if(new_cost < near_node->cost) {
-                if(checkCollision(new_node, near_node)) {
+                if(constraint_->checkCollision(new_node->state, near_node->state)) {
                     near_node->parent = new_node;
                     near_node->cost   = new_cost;
                 }

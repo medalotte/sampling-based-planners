@@ -79,16 +79,6 @@ namespace planner {
         std::shared_ptr<Node> generateSteerNode(const std::shared_ptr<Node>& src_node,
                                                 const std::shared_ptr<Node>& dst_node,
                                                 const double&                expand_dist) const;
-
-        /**
-         *  Check a constraint between 'src_node' and 'dst_node'
-         *  @src_node: source node
-         *  @dst_node: destination node
-         *  @Return:   If the path of between 'src_node' and 'dst_node' entry ConstraintType::NOENTRY,
-         *             return false
-         */
-        bool checkCollision(const std::shared_ptr<Node>& src_node,
-                            const std::shared_ptr<Node>& dst_node) const;
     };
 }
 
