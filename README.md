@@ -1,5 +1,5 @@
 # sampling-based-planners
-C++ implementation of RRT, RRT*, and Informed-RRT* as a shared library which are incremental sampling-based path planning methods, and it supports any dimensions
+C++ implementation of RRT, RRT*, and Informed-RRT* as a shared library which are sampling-based path planning methods, and it supports any dimensions
 
 #### TODO
 - Implement `examples/path-planner-3D`
