@@ -29,6 +29,7 @@
 
 #include <State/State.h>
 #include <Constraint/ConstraintBase.h>
+#include <Sampler/Sampler.h>
 
 namespace planner {
     namespace base {
@@ -82,6 +83,7 @@ namespace planner {
             double                                 result_cost_;
             std::vector<std::shared_ptr<NodeBase>> node_list_;
             std::shared_ptr<ConstraintBase>        constraint_;
+            std::unique_ptr<Sampler>               sampler_;
         };
     }
 }

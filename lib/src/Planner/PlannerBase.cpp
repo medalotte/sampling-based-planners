@@ -39,6 +39,7 @@ namespace planner {
                                             "Problem definitions are invalid");
             }
             constraint_ = constraint;
+            sampler_    = std::make_unique<Sampler>(constraint->space);
         }
 
         const std::vector<State>& PlannerBase::getResultRef() const {
