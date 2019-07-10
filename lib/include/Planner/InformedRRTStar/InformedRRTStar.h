@@ -132,27 +132,6 @@ namespace planner {
         int getBestNodeIndex(const State&                              target_state,
                              const double&                             radius,
                              const std::vector<std::shared_ptr<Node>>& node_list) const;
-
-        /**
-         *  calculate rotation matrix using singular value decomposition
-         *  ${\bf C}={\bf U}diag(1,\ldots,1,\det({\bf U})\det({\bf V})){\bf V}^{T}$
-         *  ${\bf U}\sum{}{\bf V}^{T}\equiv{\bf M}$
-         *  ${\bf M}={\bf a}_{1}{\bf 1}_{1}^{T}$
-         *  ${\bf a}_{1}=({\bf x}_{goal}-{\bf x}_{start})/\| {\bf x}_{goal}-{\bf x}_{start} \|_2$
-         *
-         *  @start:  start state
-         *  @goal:   goal state
-         *  @Return: rotation matrix
-         */
-        Eigen::MatrixXd calcRotationToWorldFlame(const State& start,
-                                                 const State& goal) const;
-
-        /**
-         *  random sampling on unit n-ball
-         *  @dim:    dimension
-         *  @Return: random state on unit n-ball
-         */
-        State sampleUnitNBall(const uint32_t& dim) const;
     };
 }
 

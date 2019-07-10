@@ -62,21 +62,6 @@ namespace planner {
     }
 
     bool RRTStar::solve(const State& start, const State& goal) {
-        // definition of random device
-        std::random_device rand_dev;
-        std::minstd_rand rand(static_cast<unsigned int>(rand_dev()));
-
-        // definition of constraint of generating random value in euclidean space
-        std::vector<std::uniform_real_distribution<double>> rand_restrictions;
-        rand_restrictions.reserve(constraint_->space.getDim());
-        for(size_t di = 1; di <= constraint_->space.getDim(); di++) {
-            rand_restrictions.emplace_back(constraint_->space.getBound(di).low,
-                                           constraint_->space.getBound(di).high);
-        }
-
-        // definition of random device in order to sample goal state with a certain probability
-        auto sample_restriction = std::uniform_real_distribution<>(0, 1.0);
-
         // definition of set of node
         std::vector<std::shared_ptr<Node>> node_list;
         node_list.reserve(max_sampling_num_);
@@ -85,10 +70,8 @@ namespace planner {
         // sampling on euclidean space
         for(size_t i = 0; i < max_sampling_num_; i++) {
             auto rand_node = std::make_shared<Node>(goal, nullptr, 0);
-            if(goal_sampling_rate_ < sample_restriction(rand)) {
-                for(size_t i = 0; i < constraint_->space.getDim(); i++) {
-                    rand_node->state.vals[i] = rand_restrictions[i](rand);
-                }
+            if(goal_sampling_rate_ < sampler_->getUniformUnitRandomVal()) {
+                rand_node->state = sampler_->run(Sampler::Mode::WholeArea);
 
                 // resample when node dose not meet constraint
                 if(constraint_->checkConstraintType(rand_node->state) == ConstraintType::NOENTRY) {
