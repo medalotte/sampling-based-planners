@@ -33,8 +33,6 @@
 #include <functional>
 #include <Planner/PlannerBase.h>
 
-#include <Eigen/Dense>
-
 namespace planner {
     class InformedRRTStar : public base::PlannerBase {
         class Node : public base::NodeBase {
