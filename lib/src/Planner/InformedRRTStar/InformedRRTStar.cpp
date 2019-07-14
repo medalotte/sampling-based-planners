@@ -277,9 +277,9 @@ namespace planner {
         for(size_t i = 0; i < node_list.size(); i++) {
             auto dist_from_target = target_state.distanceFrom(node_list[i]->state);
             if(dist_from_target < radius) {
-                if(node_list[i]->cost < min_cost) {
+                if(node_list[i]->cost + dist_from_target < min_cost) {
                     best_index = i;
-                    min_cost   = node_list[i]->cost;
+                    min_cost   = node_list[i]->cost + dist_from_target;
                 }
             }
         }
