@@ -98,6 +98,12 @@ namespace planner {
 
                 // redefine parent node of near node
                 rewireNearNodes(node_list, near_node_indexes);
+
+                auto cost_to_goal = new_node->state.distanceFrom(goal);
+                if(cost_to_goal < expand_dist_ &&
+                   new_node->cost + cost_to_goal < terminate_search_cost_) {
+                    break;
+                }
             }
         }
 
