@@ -124,7 +124,11 @@ namespace planner {
                 // redefine parent node of near node
                 rewireNearNodes(node_list, near_node_indexes);
 
-                if(new_node->state.distanceFrom(goal) < goal_region_radius_) {
+                auto cost_to_goal = new_node->state.distanceFrom(goal);
+                if(cost_to_goal < goal_region_radius_) {
+                    if(new_node->cost + cost_to_goal < terminate_search_cost_) {
+                        break;
+                    }
                     goal_node_indexes.push_back(node_list.size() - 1);
                 }
             }
@@ -133,7 +137,7 @@ namespace planner {
         result_.clear();
 
         // store the result
-        auto best_last_index = getBestNodeIndex(goal, expand_dist_, node_list);
+        auto best_last_index = getBestNodeIndex(goal, node_list, goal_node_indexes);
         if(best_last_index < 0) {
             return false;
         }
@@ -270,20 +274,17 @@ namespace planner {
     }
 
     int InformedRRTStar::getBestNodeIndex(const State&                              target_state,
-                                          const double&                             radius,
-                                          const std::vector<std::shared_ptr<Node>>& node_list) const {
+                                          const std::vector<std::shared_ptr<Node>>& node_list,
+                                          const std::vector<size_t>&                node_index_list) const {
         auto best_index = -1;
-        auto min_cost   = std::numeric_limits<double>::max();
-        for(size_t i = 0; i < node_list.size(); i++) {
-            auto dist_from_target = target_state.distanceFrom(node_list[i]->state);
-            if(dist_from_target < radius) {
-                if(node_list[i]->cost + dist_from_target < min_cost) {
-                    best_index = i;
-                    min_cost   = node_list[i]->cost + dist_from_target;
-                }
+        auto best_cost  = std::numeric_limits<double>::max();
+        for(const auto& node_index : node_index_list) {
+            auto cost_to_goal = node_list[node_index]->state.distanceFrom(target_state);
+            if(node_list[node_index]->cost + cost_to_goal < best_cost) {
+                best_cost  = node_list[node_index]->cost + cost_to_goal;
+                best_index = node_index;
             }
         }
-
         return best_index;
     }
 }

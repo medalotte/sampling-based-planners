@@ -120,16 +120,16 @@ namespace planner {
 
         /**
          *  get most low cost node in 'node_list' within 'radius' from 'target_state'
-         *  @target_state: target state
-         *  @radius:       radius
-         *  @node_list:    list that contein existing node
+         *  @target_state:    target state
+         *  @node_list:       list that contein existing node
+         *  @node_index_list: target index of node_list
          *  @Return:       index of most low cost node in 'node_list'
          *                 If do NOT exist node in 'node_list' within 'radius',
          *                 return -1
          */
         int getBestNodeIndex(const State&                              target_state,
-                             const double&                             radius,
-                             const std::vector<std::shared_ptr<Node>>& node_list) const;
+                             const std::vector<std::shared_ptr<Node>>& node_list,
+                             const std::vector<size_t>&                node_index_list) const;
     };
 }
 
