@@ -72,6 +72,8 @@ namespace planner {
 
             void setProblemDefinition(const std::shared_ptr<ConstraintBase>& constraint);
 
+            void setTerminateSearchCost(const double& terminate_search_cost);
+
             const std::vector<State>& getResultRef() const;
 
             double getResultCost() const;
@@ -81,6 +83,7 @@ namespace planner {
         protected:
             std::vector<State>                     result_;
             double                                 result_cost_;
+            double                                 terminate_search_cost_;
             std::vector<std::shared_ptr<NodeBase>> node_list_;
             std::shared_ptr<ConstraintBase>        constraint_;
             std::unique_ptr<Sampler>               sampler_;

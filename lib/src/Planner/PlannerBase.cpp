@@ -27,6 +27,7 @@
 namespace planner {
     namespace base {
         PlannerBase::PlannerBase(uint32_t dim) :
+            terminate_search_cost_(0),
             constraint_(std::make_shared<ConstraintBase>(EuclideanSpace(dim))) {
         }
 
@@ -40,6 +41,10 @@ namespace planner {
             }
             constraint_ = constraint;
             sampler_    = std::make_unique<Sampler>(constraint->space);
+        }
+
+        void PlannerBase::setTerminateSearchCost(const double& terminate_search_cost) {
+            terminate_search_cost_ = terminate_search_cost;
         }
 
         const std::vector<State>& PlannerBase::getResultRef() const {
