@@ -186,33 +186,16 @@ namespace planner {
     std::shared_ptr<InformedRRTStar::Node> InformedRRTStar::generateSteerNode(const std::shared_ptr<Node>& src_node,
                                                                               const std::shared_ptr<Node>& dst_node,
                                                                               const double& expand_dist) const {
-        auto steered_node = std::make_shared<Node>(src_node->state, src_node, src_node->cost);
-
-        if(src_node->state.distanceFrom(dst_node->state) < expand_dist) {
-            steered_node->cost  += src_node->state.distanceFrom(dst_node->state);
+        auto steered_node    = std::make_shared<Node>(src_node->state, src_node, src_node->cost);
+        auto dist_src_to_dst = src_node->state.distanceFrom(dst_node->state);
+        if(dist_src_to_dst < expand_dist) {
+            steered_node->cost  += dist_src_to_dst;
             steered_node->state  = dst_node->state;
         }
         else {
             steered_node->cost += expand_dist;
-
-            auto src = src_node->state;
-            auto dst = dst_node->state;
-
-            auto dim_expand_dist = expand_dist;
-            for(int i = constraint_->space.getDim() - 1; 0 < i; i--) {
-                auto dist_delta_dim = dst.vals.back() - src.vals.back();
-                src.vals.pop_back();
-                dst.vals.pop_back();
-                auto dist_lower_dim = (i != 1) ? dst.distanceFrom(src) : dst.vals.front() - src.vals.front();
-
-                auto t = std::atan2(dist_delta_dim, dist_lower_dim);
-
-                steered_node->state.vals[i] += dim_expand_dist * std::sin(t);
-                dim_expand_dist              = dim_expand_dist * std::cos(t);
-            }
-            steered_node->state.vals[0] += dim_expand_dist;
+            steered_node->state = src_node->state + ((dst_node->state - src_node->state) / dist_src_to_dst) * expand_dist;
         }
-
         return steered_node;
     }
 
