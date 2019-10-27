@@ -49,7 +49,7 @@ namespace planner {
              *  Constructor(Hypersphere)
              *  state and radius are initialize to zero
              */
-            Hypersphere();
+            explicit Hypersphere(const uint32_t& dim);
 
             /**
              *  Constructor(Hypersphere)
