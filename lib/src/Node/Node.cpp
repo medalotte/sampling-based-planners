@@ -22,13 +22,12 @@
  *  SOFTWARE.
  */
 
-#include <Node/NodeBase.h>
+#include <Node/Node.h>
 
 namespace planner {
-    namespace base {
-        NodeBase::NodeBase(const State&                    _state,
-                           const std::shared_ptr<NodeBase> _parent) :
-            state(_state), parent(_parent) {}
-        NodeBase::~NodeBase() {}
-    }
+    Node::Node(const State&                _state,
+               const std::shared_ptr<Node> _parent,
+               const double&               _cost) :
+        state(_state), parent(_parent), cost(_cost), is_leaf(true) { }
+    Node::~Node() { }
 }

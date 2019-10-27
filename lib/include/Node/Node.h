@@ -22,27 +22,25 @@
  *  SOFTWARE.
  */
 
-#ifndef LIB_INCLUDE_NODE_NODEBASE_H_
-#define LIB_INCLUDE_NODE_NODEBASE_H_
+#ifndef LIB_INCLUDE_NODE_NODE_H_
+#define LIB_INCLUDE_NODE_NODE_H_
 
 #include <memory>
 #include <State/State.h>
 
 namespace planner {
-    namespace base {
-        /**
-         *  Base class of graph node for sampling-based planners
-         */
-        class NodeBase {
-        public:
-            State                     state;
-            std::shared_ptr<NodeBase> parent;
+    class Node {
+    public:
+        State                 state;
+        std::shared_ptr<Node> parent;
+        double                cost;
+        bool                  is_leaf;
 
-            NodeBase(const State&                    _state,
-                     const std::shared_ptr<NodeBase> _parent);
-            virtual ~NodeBase();
-        };
-    }
+        Node(const State&                _state,
+             const std::shared_ptr<Node> _parent,
+             const double&               _cost = 0.0);
+        ~Node();
+    };
 }
 
-#endif /* LIB_INCLUDE_NODE_NODEBASE_H_ */
+#endif /* LIB_INCLUDE_NODE_NODE_H_ */
