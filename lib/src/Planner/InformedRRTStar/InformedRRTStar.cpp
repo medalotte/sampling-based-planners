@@ -126,10 +126,10 @@ namespace planner {
 
                 auto cost_to_goal = new_node->state.distanceFrom(goal);
                 if(cost_to_goal < goal_region_radius_) {
+                    goal_node_indexes.push_back(node_list.size() - 1);
                     if(new_node->cost + cost_to_goal < terminate_search_cost_) {
                         break;
                     }
-                    goal_node_indexes.push_back(node_list.size() - 1);
                 }
             }
         }
