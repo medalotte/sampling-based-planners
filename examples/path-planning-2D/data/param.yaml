@@ -6,13 +6,13 @@ RRT:
   expand_dist:        30.0
 
 RRTStar:
-  max_sampling_num:   5000
+  max_sampling_num:   10000
   goal_sampling_rate: 0.25
   expand_dist:        30.0
   R:                  2000
 
 InformedRRTStar:
-  max_sampling_num:   5000
+  max_sampling_num:   10000
   goal_sampling_rate: 0.25
   expand_dist:        30.0
   R:                  2000
@@ -30,8 +30,10 @@ WorldSize:
   x: 1000.0
   y: 1000.0
 
+ImageTerminateSearchCost: 2980
 ConstraintImage: "./constraint1.png"
 
+ObstaclesTerminateSearchCost: 1330
 Obstacles:
   num: 16
   Obstacle0:

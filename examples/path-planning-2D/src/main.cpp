@@ -47,6 +47,10 @@ int main() {
         cvlib::YAMLHelper::readStruct(start_state, PARAM_YAML_FILE_PATH, "StartState");
         cvlib::YAMLHelper::readStruct(goal_state,  PARAM_YAML_FILE_PATH, "GoalState");
 
+        auto img_terminate_search_cost = cvlib::YAMLHelper::read<double>(PARAM_YAML_FILE_PATH, "ImageTerminateSearchCost");
+        auto obs_terminate_search_cost = cvlib::YAMLHelper::read<double>(PARAM_YAML_FILE_PATH, "ObstaclesTerminateSearchCost");
+        auto terminate_search_cost     = img_terminate_search_cost;
+
         while(true) {
             bool    end_flag = false;
             cv::Mat world    = cv::Mat::zeros(cv::Size(world_size.x, world_size.y), CV_8UC1);
@@ -94,6 +98,9 @@ int main() {
 
                             //-- apply constraint
                             constraint = std::make_shared<pln::SemanticSegmentConstraint>(space, map, each_dim_size);
+
+                            //--- set terminate cost
+                            terminate_search_cost = img_terminate_search_cost;
                             return;
                         }
                         case '2': {
@@ -122,6 +129,8 @@ int main() {
                                            obstacle.getRadius(), 0xFF, -1, CV_AA);
                             }
 
+                            //--- set terminate cost
+                            terminate_search_cost = obs_terminate_search_cost;
                             return;
                         }
                         case 'q': {
@@ -192,6 +201,7 @@ int main() {
             }
 
             planner->setProblemDefinition(constraint);
+            planner->setTerminateSearchCost(terminate_search_cost);
 
             auto start_time = std::chrono::system_clock::now();
             bool status     = planner->solve(start, goal);
