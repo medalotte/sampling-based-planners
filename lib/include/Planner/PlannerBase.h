@@ -22,8 +22,8 @@
  *  SOFTWARE.
  */
 
-#ifndef LIB_INCLUDE_PLANNER_PLANNER_H_
-#define LIB_INCLUDE_PLANNER_PLANNER_H_
+#ifndef LIB_INCLUDE_PLANNER_PLANNERBASE_H_
+#define LIB_INCLUDE_PLANNER_PLANNERBASE_H_
 
 #include <memory>
 
@@ -91,4 +91,4 @@ namespace planner {
     }
 }
 
-#endif /* LIB_INCLUDE_PLANNER_PLANNER_H_ */
+#endif /* LIB_INCLUDE_PLANNER_PLANNERBASE_H_ */
