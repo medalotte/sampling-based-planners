@@ -25,29 +25,12 @@
 #ifndef LIB_INCLUDE_PLANNER_PLANNERBASE_H_
 #define LIB_INCLUDE_PLANNER_PLANNERBASE_H_
 
-#include <memory>
-
-#include <State/State.h>
+#include <Node/NodeBase.h>
 #include <Constraint/ConstraintBase.h>
 #include <Sampler/Sampler.h>
 
 namespace planner {
     namespace base {
-        /**
-         *  Base class of graph node for sampling-based planners
-         */
-        class NodeBase {
-        public:
-            State                     state;
-            std::shared_ptr<NodeBase> parent;
-
-            NodeBase(const State&                    _state,
-                     const std::shared_ptr<NodeBase> _parent) :
-                state(_state), parent(_parent) {}
-
-            virtual ~NodeBase() {}
-        };
-
         /**
          *  Base class of planners which are sampling-based method
          */

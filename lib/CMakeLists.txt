@@ -51,6 +51,7 @@ add_library(${PROJECT_NAME} SHARED
   ${PROJECT_SOURCE_DIR}/src/Constraint/SemanticSegmentConstraint/SemanticSegmentConstraint.cpp
   ${PROJECT_SOURCE_DIR}/src/Constraint/PointCloudConstraint/PointCloudConstraint.cpp
   ${PROJECT_SOURCE_DIR}/src/Sampler/Sampler.cpp
+  ${PROJECT_SOURCE_DIR}/src/Node/NodeBase.cpp
   ${PROJECT_SOURCE_DIR}/src/Planner/PlannerBase.cpp
   ${PROJECT_SOURCE_DIR}/src/Planner/RRT/RRT.cpp
   ${PROJECT_SOURCE_DIR}/src/Planner/RRTStar/RRTStar.cpp
