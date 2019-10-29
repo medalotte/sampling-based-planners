@@ -29,7 +29,7 @@ namespace planner {
              const uint32_t& max_sampling_num,
              const double&   goal_sampling_rate,
              const double&   expand_dist       ) :
-        base::PlannerBase(dim, std::make_shared<SimpleNodeList>(dim)),
+        base::PlannerBase(dim, std::make_shared<KDTreeNodeList>(dim)),
         max_sampling_num_(max_sampling_num),
         expand_dist_(expand_dist) {
         setGoalSamplingRate(goal_sampling_rate);

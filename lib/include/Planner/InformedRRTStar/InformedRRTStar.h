@@ -32,7 +32,7 @@
 #include <cmath>
 #include <functional>
 #include <Planner/PlannerBase.h>
-#include <Node/SimpleNodeList/SimpleNodeList.h>
+#include <Node/KDTreeNodeList/KDTreeNodeList.h>
 
 namespace planner {
     class InformedRRTStar : public base::PlannerBase {
