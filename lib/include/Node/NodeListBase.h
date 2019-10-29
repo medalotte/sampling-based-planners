@@ -35,7 +35,8 @@ namespace planner {
         class NodeListBase {
             using NodePtr = std::shared_ptr<Node>;
         public:
-            explicit NodeListBase(const uint32_t& dim);
+            const uint32_t DIM;
+            explicit NodeListBase(const uint32_t& _dim);
             virtual ~NodeListBase();
             virtual void add(const NodePtr& node) = 0;
             virtual void init() = 0;
@@ -44,8 +45,6 @@ namespace planner {
             virtual std::vector<NodePtr> searchNBHD(const NodePtr& node,
                                                     const double&  radius) = 0;
             virtual std::vector<NodePtr> searchLeafs() = 0;
-        private:
-            uint32_t dim_;
         };
     }
 }

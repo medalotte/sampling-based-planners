@@ -26,8 +26,8 @@
 
 namespace planner {
     namespace base {
-        NodeListBase::NodeListBase(const uint32_t& dim) :
-            dim_(dim) {}
-        NodeListBase::~NodeListBase() {}
+        NodeListBase::NodeListBase(const uint32_t& _dim) :
+            DIM(_dim) { }
+        NodeListBase::~NodeListBase() { }
     }
 }
