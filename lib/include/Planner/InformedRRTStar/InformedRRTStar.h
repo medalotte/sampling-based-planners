@@ -32,18 +32,10 @@
 #include <cmath>
 #include <functional>
 #include <Planner/PlannerBase.h>
+#include <Node/KDTreeNodeList/KDTreeNodeList.h>
 
 namespace planner {
     class InformedRRTStar : public base::PlannerBase {
-        class Node : public base::NodeBase {
-        public:
-            double cost;
-            Node(const State&                _state,
-                 const std::shared_ptr<Node> _parent,
-                 const double&               _cost) :
-                base::NodeBase(_state, _parent), cost(_cost) {}
-        };
-
     public:
         InformedRRTStar(const uint32_t& dim,
                         const uint32_t& max_sampling_num   = 1000,
@@ -67,69 +59,6 @@ namespace planner {
         double   expand_dist_;
         double   R_;
         double   goal_region_radius_;
-
-        /**
-         *  Get index that nearest node from target node in 'node_list'
-         *  @target_node: target node
-         *  @node_list:   list that contein existing node
-         *  @Return:      index of nearest node in 'node_list'
-         */
-        size_t getNearestNodeIndex(const std::shared_ptr<Node>& target_node,
-                                   const std::vector<std::shared_ptr<Node>>& node_list) const;
-
-        /**
-         *  Generate Steered node that is 'expand_dist' away from 'src_node' to 'dst_node' direction
-         *  @src_node:    source node
-         *  @dst_node:    destination node
-         *  @expand_dist: distance from 'src_node' of steered node
-         *  @Return:      steered node
-         */
-        std::shared_ptr<Node> generateSteerNode(const std::shared_ptr<Node>& src_node,
-                                                const std::shared_ptr<Node>& dst_node,
-                                                const double&                expand_dist) const;
-
-        /**
-         *  Find near nodes in 'node_list'
-         *  Near nodes are definition as formula using target dimension and number of total node
-         *  @target_node: target node
-         *  @node_list:   list that contein existing node
-         *  @Return:      set of indexes that are near 'target_node' in 'node_list'
-         */
-        std::vector<size_t> findNearNodes(const std::shared_ptr<Node>&              target_node,
-                                          const std::vector<std::shared_ptr<Node>>& node_list) const;
-
-        /**
-         *  Choose parent node from near node that find in findNearNodes()
-         *  @target_node:       target node
-         *  @node_list:         list that contein existing node
-         *  @near_node_indexes: return value of findNearNodes()
-         *  @Return: node that choosed new parent node
-         */
-        std::shared_ptr<Node> chooseParentNode(const std::shared_ptr<Node>&              target_node,
-                                               const std::vector<std::shared_ptr<Node>>& node_list,
-                                               const std::vector<size_t>&                near_node_indexes) const;
-
-        /**
-         *  redefine parent node of near node that find in findNearNodes()
-         *  @node_list:         list that contein existing node
-         *  @near_node_indexes: return value of findNearNodes()
-         *  @Return:            void
-         */
-        void rewireNearNodes(std::vector<std::shared_ptr<Node>>& node_list,
-                             const std::vector<size_t>&          near_node_indexes) const;
-
-        /**
-         *  get most low cost node in 'node_list' within 'radius' from 'target_state'
-         *  @target_state:    target state
-         *  @node_list:       list that contein existing node
-         *  @node_index_list: target index of node_list
-         *  @Return:       index of most low cost node in 'node_list'
-         *                 If do NOT exist node in 'node_list' within 'radius',
-         *                 return -1
-         */
-        int getBestNodeIndex(const State&                              target_state,
-                             const std::vector<std::shared_ptr<Node>>& node_list,
-                             const std::vector<size_t>&                node_index_list) const;
     };
 }
 

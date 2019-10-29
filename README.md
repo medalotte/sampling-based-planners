@@ -1,16 +1,13 @@
 # sampling-based-planners
 C++ implementation of RRT, RRT*, and Informed-RRT* as a shared library which are sampling-based path planning methods, and it supports any dimensions
 
-#### TODO
-- Implement `examples/path-planner-3D`
-    - adopt python API (Python.h) and use matplotlib in order to plot 3D graph
-
 ## Features
 - Provided as a shared library usable in **C++14** or higher
 - You can execute at **any dimensions** without recompiling the shared library
+- To quickly search for NN and NBHD nodes, a node list consists of **kd-tree**.
 
 ## Requirements
-The following software packages are required for building the shared library
+The following software packages are required for building the shared library:
 - A C++ compiler with **C++14** or higher support
 - CMake **3.0** or higher
 - Eigen **3.0** or higher
@@ -22,7 +19,7 @@ If you would like to compile the example programs, add the following:
 The shared library (**libplanner.so**) can be build with following commands
 
 ``` sh
-$ git clone git@github.com:kyk0910/sampling-based-planners.git
+$ git clone https://github.com/kyk0910/sampling-based-planners.git
 $ cd sampling-based-planners/lib
 $ mkdir build && cd build
 $ cmake ..
@@ -34,7 +31,7 @@ The example program can be run with following commands after build the shared li
 ``` sh
 $ cd <top of this repository>
 $ git submodule update --init
-$ cd examples/<example program directory>
+$ cd examples/path-planning-2D
 $ mkdir build && cd build
 $ cmake ..
 $ make
@@ -99,7 +96,9 @@ auto constraint = std::make_shared<pln::SemanticSegmentConstraint>(space, map, e
 ### 4. Solve
 ``` c++
 // definition of planner (you can set some parameters at optional argument)
-pln::RRTStar planner(DIM);
+// pln::RRT planner(DIM);
+// pln::RRTStar planner(DIM);
+pln::InformedRRTStar planner(DIM);
 
 // set constraint
 planner.setProblemDefinition(constraint);
@@ -111,7 +110,7 @@ pln::State goal(90.0, 90.0);
 // solve
 bool status = planner.solve(start, goal);
 if(status) {
-    auto result = planner.getResultRef();
+    auto& result = planner.getResult();
     for(const auto& r : result) {
         std::cout << r << std::endl;
     }

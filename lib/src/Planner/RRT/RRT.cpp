@@ -25,11 +25,11 @@
 #include <Planner/RRT/RRT.h>
 
 namespace planner {
-    RRT::RRT(uint32_t dim,
-             uint32_t max_sampling_num,
-             double goal_sampling_rate,
-             double expand_dist) :
-        base::PlannerBase(dim),
+    RRT::RRT(const uint32_t& dim,
+             const uint32_t& max_sampling_num,
+             const double&   goal_sampling_rate,
+             const double&   expand_dist       ) :
+        base::PlannerBase(dim, std::make_shared<KDTreeNodeList>(dim)),
         max_sampling_num_(max_sampling_num),
         expand_dist_(expand_dist) {
         setGoalSamplingRate(goal_sampling_rate);
@@ -57,12 +57,12 @@ namespace planner {
 
     bool RRT::solve(const State& start, const State& goal) {
         // initialize list of node
-        std::vector<std::shared_ptr<Node>> node_list;
-        node_list.reserve(max_sampling_num_);
-        node_list.push_back(std::make_shared<Node>(start, nullptr));
+        node_list_->init();
+        node_list_->add(std::make_shared<Node>(start, nullptr));
 
         // sampling on euclidean space
         uint32_t sampling_cnt = 0;
+        std::shared_ptr<Node> end_node;
         while(true) {
             auto rand_node = std::make_shared<Node>(goal, nullptr);
             if(goal_sampling_rate_ < sampler_->getUniformUnitRandomVal()) {
@@ -75,18 +75,19 @@ namespace planner {
             }
 
             // get index of node that nearest node from sampling node
-            auto nearest_node_index = getNearestNodeIndex(rand_node, node_list);
+            auto nearest_node = node_list_->searchNN(rand_node);
 
             // generate new node
-            auto new_node = generateSteerNode(node_list[nearest_node_index], rand_node, expand_dist_);
+            auto new_node = generateSteerNode(nearest_node, rand_node, expand_dist_);
 
             // add to list if new node meets constraint
-            if(constraint_->checkCollision(node_list[nearest_node_index]->state, new_node->state)) {
-                node_list.push_back(new_node);
+            if(constraint_->checkCollision(nearest_node->state, new_node->state)) {
+                node_list_->add(new_node);
 
                 // terminate processing if distance between new node and goal state is less than 'expand_dist'
                 if(new_node->state.distanceFrom(goal) <= expand_dist_) {
-                    node_list.push_back(std::make_shared<Node>(goal, node_list.back()));
+                    end_node = std::make_shared<Node>(goal, new_node);
+                    node_list_->add(end_node);
                     break;
                 }
             }
@@ -99,57 +100,21 @@ namespace planner {
 
         // store the result
         result_.clear();
-        std::shared_ptr<base::NodeBase> result_node = node_list.back();
-
         auto cost = 0.0;
         while(true) {
-            result_.insert(result_.begin(), result_node->state);
-            if(result_node->parent == nullptr) {
-                cost += result_node->state.distanceFrom(start);
+            result_.insert(result_.begin(), end_node->state);
+            if(end_node->parent == nullptr) {
+                cost += end_node->state.distanceFrom(start);
                 break;
             }
             else {
-                cost += result_node->state.distanceFrom(result_node->parent->state);
+                cost += end_node->state.distanceFrom(end_node->parent->state);
             }
 
-            result_node = result_node->parent;
+            end_node = end_node->parent;
         }
 
         result_cost_ = cost;
-
-        // store the node list
-        node_list_.clear();
-        std::move(node_list.begin(), node_list.end(), std::back_inserter(node_list_));
-
         return true;
-    }
-
-    size_t RRT::getNearestNodeIndex(const std::shared_ptr<Node>& target_node,
-                                    const std::vector<std::shared_ptr<Node>>& node_list) const {
-        auto min_dist_index = 0;
-        auto min_dist       = std::numeric_limits<double>::max();
-        for(size_t i = 0; i < node_list.size(); i++) {
-            auto dist = node_list[i]->state.distanceFrom(target_node->state);
-            if(dist < min_dist) {
-                min_dist = dist;
-                min_dist_index = i;
-            }
-        }
-
-        return min_dist_index;
-    }
-
-    std::shared_ptr<RRT::Node> RRT::generateSteerNode(const std::shared_ptr<Node>& src_node,
-                                                      const std::shared_ptr<Node>& dst_node,
-                                                      const double& expand_dist) const {
-        auto steered_node    = std::make_shared<Node>(src_node->state, src_node);
-        auto dist_src_to_dst = src_node->state.distanceFrom(dst_node->state);
-        if(dist_src_to_dst < expand_dist) {
-            steered_node->state = dst_node->state;
-        }
-        else {
-            steered_node->state = src_node->state + ((dst_node->state - src_node->state) / dist_src_to_dst) * expand_dist;
-        }
-        return steered_node;
     }
 }

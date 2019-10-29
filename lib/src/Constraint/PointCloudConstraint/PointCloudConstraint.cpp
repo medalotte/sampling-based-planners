@@ -25,8 +25,8 @@
 #include <Constraint/PointCloudConstraint/PointCloudConstraint.h>
 
 namespace planner {
-    PointCloudConstraint::Hypersphere::Hypersphere():
-        state_(State()), radius_(0) {
+    PointCloudConstraint::Hypersphere::Hypersphere(const uint32_t& dim):
+        state_(dim), radius_(0) {
     }
 
     PointCloudConstraint::Hypersphere::Hypersphere(const State& state, const double& radius) :

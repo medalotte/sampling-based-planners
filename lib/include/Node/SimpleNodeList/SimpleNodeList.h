@@ -22,41 +22,31 @@
  *  SOFTWARE.
  */
 
-#ifndef LIB_INCLUDE_PLANNER_RRTSTAR_RRTSTAR_H_
-#define LIB_INCLUDE_PLANNER_RRTSTAR_RRTSTAR_H_
+#ifndef LIB_INCLUDE_NODE_SIMPLENODELIST_H_
+#define LIB_INCLUDE_NODE_SIMPLENODELIST_H_
 
-#include <iostream>
-#include <vector>
-#include <random>
-#include <cstdint>
-#include <cmath>
-#include <functional>
-#include <Planner/PlannerBase.h>
-#include <Node/KDTreeNodeList/KDTreeNodeList.h>
+#include <Node/NodeListBase.h>
+#include <limits>
 
 namespace planner {
-    class RRTStar : public base::PlannerBase {
+    /**
+     *  using std::vector and the NN and NBHD are solved by linear search.
+     */
+    class SimpleNodeList : public base::NodeListBase {
+        using NodePtr = std::shared_ptr<Node>;
     public:
-        RRTStar(const uint32_t& dim,
-                const uint32_t& max_sampling_num   = 1000,
-                const double&   goal_sampling_rate = 0.25,
-                const double&   expand_dist        = 1.0,
-                const double&   R                  = 10.0);
-        ~RRTStar();
-
-        void setMaxSamplingNum(const uint32_t& max_sampling_num);
-        void setGoalSamplingRate(const double& goal_sampling_rate);
-        void setExpandDist(const double& expand_dist);
-        void setR(const double& R);
-
-        bool solve(const State& start, const State& goal) override;
-
+        explicit SimpleNodeList(const uint32_t& dim);
+        ~SimpleNodeList();
+        void add(const NodePtr& node);
+        void init();
+        int getSize();
+        NodePtr searchNN(const NodePtr& node);
+        std::vector<NodePtr> searchNBHD(const NodePtr& node,
+                                        const double&  radius);
+        std::vector<NodePtr> searchLeafs();
     private:
-        uint32_t max_sampling_num_;
-        double   goal_sampling_rate_;
-        double   expand_dist_;
-        double   R_;
+        std::vector<NodePtr> list_;
     };
 }
 
-#endif /* LIB_INCLUDE_PLANNER_RRTSTAR_RRTSTAR_H_ */
+#endif /* LIB_INCLUDE_NODE_SIMPLENODELIST_H_ */

@@ -51,11 +51,15 @@ add_library(${PROJECT_NAME} SHARED
   ${PROJECT_SOURCE_DIR}/src/Constraint/SemanticSegmentConstraint/SemanticSegmentConstraint.cpp
   ${PROJECT_SOURCE_DIR}/src/Constraint/PointCloudConstraint/PointCloudConstraint.cpp
   ${PROJECT_SOURCE_DIR}/src/Sampler/Sampler.cpp
-  ${PROJECT_SOURCE_DIR}/src/Node/NodeBase.cpp
+  ${PROJECT_SOURCE_DIR}/src/Node/Node.cpp
+  ${PROJECT_SOURCE_DIR}/src/Node/NodeListBase.cpp
+  ${PROJECT_SOURCE_DIR}/src/Node/SimpleNodeList/SimpleNodeList.cpp
+  ${PROJECT_SOURCE_DIR}/src/Node/KDTreeNodeList/KDTreeNodeList.cpp
   ${PROJECT_SOURCE_DIR}/src/Planner/PlannerBase.cpp
   ${PROJECT_SOURCE_DIR}/src/Planner/RRT/RRT.cpp
   ${PROJECT_SOURCE_DIR}/src/Planner/RRTStar/RRTStar.cpp
-  ${PROJECT_SOURCE_DIR}/src/Planner/InformedRRTStar/InformedRRTStar.cpp)
+  ${PROJECT_SOURCE_DIR}/src/Planner/InformedRRTStar/InformedRRTStar.cpp
+  )
 
 target_link_libraries(${PROJECT_NAME}
   ${EIGEN3_LIBS}

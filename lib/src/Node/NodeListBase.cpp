@@ -22,41 +22,12 @@
  *  SOFTWARE.
  */
 
-#ifndef LIB_INCLUDE_PLANNER_RRTSTAR_RRTSTAR_H_
-#define LIB_INCLUDE_PLANNER_RRTSTAR_RRTSTAR_H_
-
-#include <iostream>
-#include <vector>
-#include <random>
-#include <cstdint>
-#include <cmath>
-#include <functional>
-#include <Planner/PlannerBase.h>
-#include <Node/KDTreeNodeList/KDTreeNodeList.h>
+#include <Node/NodeListBase.h>
 
 namespace planner {
-    class RRTStar : public base::PlannerBase {
-    public:
-        RRTStar(const uint32_t& dim,
-                const uint32_t& max_sampling_num   = 1000,
-                const double&   goal_sampling_rate = 0.25,
-                const double&   expand_dist        = 1.0,
-                const double&   R                  = 10.0);
-        ~RRTStar();
-
-        void setMaxSamplingNum(const uint32_t& max_sampling_num);
-        void setGoalSamplingRate(const double& goal_sampling_rate);
-        void setExpandDist(const double& expand_dist);
-        void setR(const double& R);
-
-        bool solve(const State& start, const State& goal) override;
-
-    private:
-        uint32_t max_sampling_num_;
-        double   goal_sampling_rate_;
-        double   expand_dist_;
-        double   R_;
-    };
+    namespace base {
+        NodeListBase::NodeListBase(const uint32_t& _dim) :
+            DIM(_dim) { }
+        NodeListBase::~NodeListBase() { }
+    }
 }
-
-#endif /* LIB_INCLUDE_PLANNER_RRTSTAR_RRTSTAR_H_ */

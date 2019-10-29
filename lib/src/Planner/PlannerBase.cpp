@@ -26,9 +26,11 @@
 
 namespace planner {
     namespace base {
-        PlannerBase::PlannerBase(uint32_t dim) :
+        PlannerBase::PlannerBase(const uint32_t& dim,
+                                 std::shared_ptr<NodeListBase> node_list) :
             terminate_search_cost_(0),
-            constraint_(std::make_shared<ConstraintBase>(EuclideanSpace(dim))) {
+            constraint_(std::make_shared<ConstraintBase>(EuclideanSpace(dim))),
+            node_list_(node_list) {
         }
 
         PlannerBase::~PlannerBase() {
@@ -47,7 +49,7 @@ namespace planner {
             terminate_search_cost_ = terminate_search_cost;
         }
 
-        const std::vector<State>& PlannerBase::getResultRef() const {
+        const std::vector<State>& PlannerBase::getResult() const {
             return result_;
         }
 
@@ -55,8 +57,57 @@ namespace planner {
             return result_cost_;
         }
 
-        const std::vector<std::shared_ptr<NodeBase>>& PlannerBase::getNodeListRef() const {
+        std::shared_ptr<NodeListBase> PlannerBase::getNodeList() const {
             return node_list_;
+        }
+
+        std::shared_ptr<Node> PlannerBase::generateSteerNode(const std::shared_ptr<Node>& src_node,
+                                                             const std::shared_ptr<Node>& dst_node,
+                                                             const double& expand_dist) const {
+            auto steered_node    = std::make_shared<Node>(src_node->state, src_node, src_node->cost);
+            auto dist_src_to_dst = src_node->state.distanceFrom(dst_node->state);
+            if(dist_src_to_dst < expand_dist) {
+                steered_node->cost  += dist_src_to_dst;
+                steered_node->state  = dst_node->state;
+            }
+            else {
+                steered_node->cost += expand_dist;
+                steered_node->state = src_node->state + ((dst_node->state - src_node->state) / dist_src_to_dst) * expand_dist;
+            }
+            return steered_node;
+        }
+
+        void PlannerBase::updateParent(const std::shared_ptr<Node>&              target_node,
+                                       const std::vector<std::shared_ptr<Node>>& near_nodes) const {
+            auto min_cost_parent_node = target_node->parent;
+            auto min_cost             = std::numeric_limits<double>::max();
+            for(const auto& near_node : near_nodes) {
+                auto dist = target_node->state.distanceFrom(near_node->state);
+                auto cost = near_node->cost + dist;
+                if(cost < min_cost) {
+                    if(constraint_->checkCollision(target_node->state, near_node->state)) {
+                        min_cost_parent_node = near_node;
+                        min_cost             = cost;
+                    }
+                }
+            }
+            if(min_cost != std::numeric_limits<double>::max()) {
+                target_node->parent = min_cost_parent_node;
+                target_node->cost   = min_cost;
+            }
+        }
+
+        void PlannerBase::rewireNearNodes(std::shared_ptr<Node>&              new_node,
+                                          std::vector<std::shared_ptr<Node>>& near_nodes) const {
+            for(const auto& near_node : near_nodes) {
+                auto new_cost = new_node->cost + near_node->state.distanceFrom(new_node->state);
+                if(new_cost < near_node->cost) {
+                    if(constraint_->checkCollision(new_node->state, near_node->state)) {
+                        near_node->parent = new_node;
+                        near_node->cost   = new_cost;
+                    }
+                }
+            }
         }
     }
 }

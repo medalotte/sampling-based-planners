@@ -25,7 +25,7 @@
 #ifndef LIB_INCLUDE_PLANNER_PLANNERBASE_H_
 #define LIB_INCLUDE_PLANNER_PLANNERBASE_H_
 
-#include <Node/NodeBase.h>
+#include <Node/NodeListBase.h>
 #include <Constraint/ConstraintBase.h>
 #include <Sampler/Sampler.h>
 
@@ -36,7 +36,8 @@ namespace planner {
          */
         class PlannerBase {
         public:
-            explicit PlannerBase(uint32_t dim);
+            explicit PlannerBase(const uint32_t& dim,
+                                 std::shared_ptr<NodeListBase> node_list);
             virtual ~PlannerBase();
 
             PlannerBase(const PlannerBase&) = delete;
@@ -57,19 +58,50 @@ namespace planner {
 
             void setTerminateSearchCost(const double& terminate_search_cost);
 
-            const std::vector<State>& getResultRef() const;
+            const std::vector<State>& getResult() const;
 
             double getResultCost() const;
 
-            const std::vector<std::shared_ptr<NodeBase>>& getNodeListRef() const;
+            std::shared_ptr<NodeListBase> getNodeList() const;
 
         protected:
-            std::vector<State>                     result_;
-            double                                 result_cost_;
-            double                                 terminate_search_cost_;
-            std::vector<std::shared_ptr<NodeBase>> node_list_;
-            std::shared_ptr<ConstraintBase>        constraint_;
-            std::unique_ptr<Sampler>               sampler_;
+            std::vector<State>              result_;
+            double                          result_cost_;
+            double                          terminate_search_cost_;
+            std::shared_ptr<ConstraintBase> constraint_;
+            std::shared_ptr<NodeListBase>   node_list_;
+            std::unique_ptr<Sampler>        sampler_;
+
+            /**
+             *  Generate Steered node that is 'expand_dist' away from 'src_node' to 'dst_node' direction
+             *  @src_node:    source node
+             *  @dst_node:    destination node
+             *  @expand_dist: distance from 'src_node' of steered node
+             *  @Return:      steered node
+             */
+            std::shared_ptr<Node> generateSteerNode(const std::shared_ptr<Node>& src_node,
+                                                    const std::shared_ptr<Node>& dst_node,
+                                                    const double&                expand_dist) const;
+
+            /**
+             *  Choose parent node from near node that find in findNearNodes()
+             *  @target_node:       target node
+             *  @node_list:         list that contein existing node
+             *  @near_node_indexes: return value of findNearNodes()
+             *  @Return: node that choosed new parent node
+             */
+            void updateParent(const std::shared_ptr<Node>&              target_node,
+                              const std::vector<std::shared_ptr<Node>>& near_nodes) const;
+
+            /**
+             *  redefine parent node of near node that find in findNearNodes()
+             *  @node_list:         list that contein existing node
+             *  @near_node_indexes: return value of findNearNodes()
+             *  @Return:            void
+             */
+            void rewireNearNodes(std::shared_ptr<Node>&              new_node,
+                                 std::vector<std::shared_ptr<Node>>& near_nodes) const;
+
         };
     }
 }

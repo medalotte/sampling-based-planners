@@ -209,8 +209,8 @@ int main() {
 
             if(status) {
                 // draw and output result
-                auto node_list = planner->getNodeListRef();
-                auto result    = planner->getResultRef();
+                auto node_list = planner->getNodeList();
+                auto result    = planner->getResult();
 
                 cv::cvtColor(world, world, CV_GRAY2RGB);
 
@@ -222,12 +222,14 @@ int main() {
                     }
                 }
 
-                for(const auto& node : node_list) {
-                    if(node->parent != nullptr) {
+                auto leafs = node_list->searchLeafs();
+                for(auto node : leafs) {
+                    while(node->parent != nullptr) {
                         cv::line(world,
                                  cv::Point(node->state.vals[0], node->state.vals[1]),
                                  cv::Point(node->parent->state.vals[0], node->parent->state.vals[1]),
                                  cv::Vec3b(64, 92, 16), 1.0, CV_AA);
+                        node = node->parent;
                     }
                 }
 
