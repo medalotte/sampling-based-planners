@@ -97,10 +97,10 @@ namespace planner {
              *  redefine parent node of near node that find in findNearNodes()
              *  @node_list:         list that contein existing node
              *  @near_node_indexes: return value of findNearNodes()
-             *  @Return:            void
+             *  @Return:            nodes which are rewired
              */
-            void rewireNearNodes(std::shared_ptr<Node>&              new_node,
-                                 std::vector<std::shared_ptr<Node>>& near_nodes) const;
+            std::vector<std::shared_ptr<Node>> rewireNearNodes(std::shared_ptr<Node>&              new_node,
+                                                               std::vector<std::shared_ptr<Node>>& near_nodes) const;
 
         };
     }

@@ -97,17 +97,20 @@ namespace planner {
             }
         }
 
-        void PlannerBase::rewireNearNodes(std::shared_ptr<Node>&              new_node,
-                                          std::vector<std::shared_ptr<Node>>& near_nodes) const {
+        std::vector<std::shared_ptr<Node>> PlannerBase::rewireNearNodes(std::shared_ptr<Node>&              new_node,
+                                                                        std::vector<std::shared_ptr<Node>>& near_nodes) const {
+            std::vector<std::shared_ptr<Node>> rewired_nodes;
             for(const auto& near_node : near_nodes) {
                 auto new_cost = new_node->cost + near_node->state.distanceFrom(new_node->state);
                 if(new_cost < near_node->cost) {
                     if(constraint_->checkCollision(new_node->state, near_node->state)) {
                         near_node->parent = new_node;
                         near_node->cost   = new_cost;
+                        rewired_nodes.push_back(near_node);
                     }
                 }
             }
+            return rewired_nodes;
         }
     }
 }
