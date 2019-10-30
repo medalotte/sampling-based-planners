@@ -79,19 +79,18 @@ namespace planner {
 
         // sampling on euclidean space
         for(size_t i = 0; i < max_sampling_num_; i++) {
-            // get best cost in the set of node which exist on goal region
-            auto best_cost = std::numeric_limits<double>::max();
-            for(const auto& near_goal_node : near_goal_nodes) {
-                best_cost = std::min(best_cost, near_goal_node->cost);
-            }
-
             // sampling node
             auto rand_node = std::make_shared<Node>(goal, nullptr, 0);
             if(goal_sampling_rate_ < sampler_->getUniformUnitRandomVal()) {
-                if(best_cost == std::numeric_limits<double>::max()) {
+                if(near_goal_nodes.size() == 0) {
                     rand_node->state = sampler_->run(Sampler::Mode::WholeArea);
                 }
                 else {
+                    // get best cost in the set of node which exist on goal region
+                    auto best_cost = std::numeric_limits<double>::max();
+                    for(const auto& near_goal_node : near_goal_nodes) {
+                        best_cost = std::min(best_cost, near_goal_node->cost + near_goal_node->state.distanceFrom(goal));
+                    }
                     sampler_->setBestCost(best_cost);
                     rand_node->state = sampler_->run(Sampler::Mode::HeuristicDomain);
                 }
