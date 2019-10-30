@@ -31,9 +31,6 @@
 #include <algorithm>
 
 namespace planner {
-    /**
-     *  Base class of node list for sampling-based planners
-     */
     class KDTreeNodeList : public base::NodeListBase {
         using NodePtr = std::shared_ptr<Node>;
     public:

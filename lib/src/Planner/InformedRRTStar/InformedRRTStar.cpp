@@ -68,15 +68,14 @@ namespace planner {
     }
 
     bool InformedRRTStar::solve(const State& start, const State& goal) {
-        sampler_->applyStartAndGoal(start, goal);
-
-        // definition of set of node
-        node_list_->init();
-        node_list_->add(std::make_shared<Node>(start, nullptr));
-
         auto estimate_cost = [](const std::shared_ptr<Node>& node) -> double {
                                  return node->cost + node->cost_to_goal;
                              };
+
+        // initialize sampler and node list
+        sampler_->applyStartAndGoal(start, goal);
+        node_list_->init();
+        node_list_->add(std::make_shared<Node>(start, nullptr));
 
         // sampling on euclidean space
         std::shared_ptr<Node> min_cost_node = nullptr;
@@ -88,38 +87,37 @@ namespace planner {
                     rand_node->state = sampler_->run(Sampler::Mode::WholeArea);
                 }
                 else {
-                    // get best cost in the set of node which exist on goal region
                     sampler_->setBestCost(min_cost_node->cost + goal.distanceFrom(min_cost_node->state));
                     rand_node->state = sampler_->run(Sampler::Mode::HeuristicDomain);
                 }
 
-                // resample when node dose not meet constraint
+                // resample when rand node dose not meet constraint
                 if(constraint_->checkConstraintType(rand_node->state) == ConstraintType::NOENTRY) {
                     continue;
                 }
             }
 
-            // get index of node that nearest node from sampling node
+            // get node that is nearest neighbor node from node list and generate new node
             auto nearest_node = node_list_->searchNN(rand_node);
-
-            // generate new node
-            auto new_node = generateSteerNode(nearest_node, rand_node, expand_dist_);
-            new_node->cost_to_goal = goal.distanceFrom(new_node->state);
+            auto new_node     = generateSteerNode(nearest_node, rand_node, expand_dist_);
+            new_node->cost_to_goal = new_node->state.distanceFrom(goal);
 
             // add to list if new node meets constraint
             if(constraint_->checkCollision(nearest_node->state, new_node->state)) {
-                // Find nodes that exist on certain domain
+                // find nodes that exist on certain domain
                 auto radius = R_ * std::pow((std::log(node_list_->getSize()) / node_list_->getSize()), 1.0 / constraint_->space.getDim());
                 auto near_nodes = node_list_->searchNBHD(new_node, radius);
 
-                // Choose parent node from near node
+                // choose parent node of new node from near nodes
                 updateParent(new_node, near_nodes);
 
-                // add node to list
+                // add new node to list
                 node_list_->add(new_node);
 
-                // redefine parent node of near node
+                // redefine parent node of near nodes
                 auto changed_cost_nodes = rewireNearNodes(new_node, near_nodes);
+
+                // reacquire the lowest cost node close to the goal
                 changed_cost_nodes.push_back(new_node);
                 for(const auto& changed_cost_node : changed_cost_nodes) {
                     if(changed_cost_node->cost_to_goal <= goal_region_radius_) {

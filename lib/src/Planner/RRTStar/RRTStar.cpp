@@ -62,9 +62,9 @@ namespace planner {
     }
 
     bool RRTStar::solve(const State& start, const State& goal) {
-        // definition of set of node
+        // initialize sampler and node list
         node_list_->init();
-        node_list_->add(std::make_shared<Node>(start, nullptr, 0));
+        node_list_->add(std::make_shared<Node>(start, nullptr));
 
         // sampling on euclidean space
         for(size_t i = 0; i < max_sampling_num_; i++) {
@@ -78,30 +78,27 @@ namespace planner {
                 }
             }
 
-            // get index of node that nearest node from sampling node
+            // get node that is nearest neighbor node from node list and generate new node
             auto nearest_node = node_list_->searchNN(rand_node);
-
-            // generate new node
-            auto new_node = generateSteerNode(nearest_node, rand_node, expand_dist_);
+            auto new_node     = generateSteerNode(nearest_node, rand_node, expand_dist_);
 
             // add to list if new node meets constraint
             if(constraint_->checkCollision(nearest_node->state, new_node->state)) {
-                // Find nodes that exist on certain domain
+                // find nodes that exist on certain domain
                 auto radius = R_ * std::pow((std::log(node_list_->getSize()) / node_list_->getSize()), 1.0 / constraint_->space.getDim());
                 auto near_nodes = node_list_->searchNBHD(new_node, radius);
 
-                // Choose parent node from near node
+                // choose parent node of new node from near nodes
                 updateParent(new_node, near_nodes);
 
-                // add node to list
+                // add new node to list
                 node_list_->add(new_node);
 
-                // redefine parent node of near node
+                // redefine parent node of near nodes
                 rewireNearNodes(new_node, near_nodes);
 
                 auto cost_to_goal = new_node->state.distanceFrom(goal);
-                if(cost_to_goal < expand_dist_ &&
-                   new_node->cost + cost_to_goal < terminate_search_cost_) {
+                if(cost_to_goal < expand_dist_ && new_node->cost + cost_to_goal < terminate_search_cost_) {
                     break;
                 }
             }
