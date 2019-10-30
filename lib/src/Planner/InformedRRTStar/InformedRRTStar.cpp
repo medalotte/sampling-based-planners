@@ -74,24 +74,22 @@ namespace planner {
         node_list_->init();
         node_list_->add(std::make_shared<Node>(start, nullptr));
 
-        // definition of index of set of node which exist on goal region
-        std::vector<std::shared_ptr<Node>> near_goal_nodes;
+        auto estimate_cost = [](const std::shared_ptr<Node>& node) -> double {
+                                 return node->cost + node->cost_to_goal;
+                             };
 
         // sampling on euclidean space
+        std::shared_ptr<Node> min_cost_node = nullptr;
         for(size_t i = 0; i < max_sampling_num_; i++) {
             // sampling node
             auto rand_node = std::make_shared<Node>(goal, nullptr, 0);
             if(goal_sampling_rate_ < sampler_->getUniformUnitRandomVal()) {
-                if(near_goal_nodes.size() == 0) {
+                if(min_cost_node == nullptr) {
                     rand_node->state = sampler_->run(Sampler::Mode::WholeArea);
                 }
                 else {
                     // get best cost in the set of node which exist on goal region
-                    auto best_cost = std::numeric_limits<double>::max();
-                    for(const auto& near_goal_node : near_goal_nodes) {
-                        best_cost = std::min(best_cost, near_goal_node->cost + near_goal_node->state.distanceFrom(goal));
-                    }
-                    sampler_->setBestCost(best_cost);
+                    sampler_->setBestCost(min_cost_node->cost + goal.distanceFrom(min_cost_node->state));
                     rand_node->state = sampler_->run(Sampler::Mode::HeuristicDomain);
                 }
 
@@ -106,6 +104,7 @@ namespace planner {
 
             // generate new node
             auto new_node = generateSteerNode(nearest_node, rand_node, expand_dist_);
+            new_node->cost_to_goal = goal.distanceFrom(new_node->state);
 
             // add to list if new node meets constraint
             if(constraint_->checkCollision(nearest_node->state, new_node->state)) {
@@ -120,30 +119,30 @@ namespace planner {
                 node_list_->add(new_node);
 
                 // redefine parent node of near node
-                rewireNearNodes(new_node, near_nodes);
-
-                auto cost_to_goal = new_node->state.distanceFrom(goal);
-                if(cost_to_goal < goal_region_radius_) {
-                    near_goal_nodes.push_back(new_node);
-                    if(new_node->cost + cost_to_goal < terminate_search_cost_) {
-                        break;
+                auto changed_cost_nodes = rewireNearNodes(new_node, near_nodes);
+                changed_cost_nodes.push_back(new_node);
+                for(const auto& changed_cost_node : changed_cost_nodes) {
+                    if(changed_cost_node->cost_to_goal <= goal_region_radius_) {
+                        if(min_cost_node == nullptr || estimate_cost(changed_cost_node) < estimate_cost(min_cost_node)) {
+                            min_cost_node = changed_cost_node;
+                        }
                     }
+                }
+
+                if(min_cost_node != nullptr && estimate_cost(min_cost_node) < terminate_search_cost_) {
+                    break;
                 }
             }
         }
 
         // store the result
         result_.clear();
-        if(near_goal_nodes.size() == 0) {
+        if(min_cost_node == nullptr) {
             return false;
         }
         else {
-            auto result_node = near_goal_nodes.front();
-            for(const auto& near_goal_node : near_goal_nodes) {
-                result_node = (near_goal_node->cost < result_node->cost) ? near_goal_node : result_node;
-            }
-
-            result_cost_ = result_node->cost + result_node->state.distanceFrom(goal);
+            auto result_node = min_cost_node;
+            result_cost_ = estimate_cost(result_node);
             if(result_node->state != goal) {
                 result_.push_back(goal);
             }
