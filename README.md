@@ -1,5 +1,5 @@
 # sampling-based-planners
-C++ implementation of RRT, RRT*, and Informed-RRT* as a shared library which are sampling-based path planning methods, and it supports any dimensions
+C++ implementation of RRT, RRT*, and Informed-RRT* using kd-tree for searching NN and NBHD nodes. Supports arbitrary dimensions and compiles as a shared library.
 
 ## Features
 - Provided as a shared library usable in **C++14** or higher
