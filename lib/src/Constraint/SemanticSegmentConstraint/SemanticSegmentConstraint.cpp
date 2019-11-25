@@ -91,7 +91,7 @@ namespace planner {
             for(size_t j = 0; j < i; j++) {
                 product *= each_dim_size_[j];
             }
-            index += std::floor(state.vals[i] * each_dim_size_[i] / bound.getRange()) * product;
+            index += std::floor((state.vals[i] - bound.low) * each_dim_size_[i] / bound.getRange()) * product;
         }
 
         return constraint_[index];
