@@ -8,14 +8,14 @@ RRT:
 RRTStar:
   max_sampling_num:   10000
   goal_sampling_rate: 0.25
-  expand_dist:        30.0
-  R:                  2000
+  expand_dist:        500
+  R:                  2500
 
 InformedRRTStar:
   max_sampling_num:   10000
   goal_sampling_rate: 0.25
-  expand_dist:        30.0
-  R:                  2000
+  expand_dist:        500
+  R:                  2500
   goal_region_radius: 100.0
 
 StartState:
