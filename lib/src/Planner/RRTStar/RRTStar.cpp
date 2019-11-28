@@ -85,7 +85,8 @@ namespace planner {
             // add to list if new node meets constraint
             if(constraint_->checkCollision(nearest_node->state, new_node->state)) {
                 // find nodes that exist on certain domain
-                auto radius = R_ * std::pow((std::log(node_list_->getSize()) / node_list_->getSize()), 1.0 / constraint_->space.getDim());
+                auto nof_node   = node_list_->getSize();
+                auto radius     = std::min(expand_dist_, R_ * std::pow((std::log(nof_node) / nof_node), 1.0 / constraint_->space.getDim()));
                 auto near_nodes = node_list_->searchNBHD(new_node, radius);
 
                 // choose parent node of new node from near nodes
@@ -97,9 +98,11 @@ namespace planner {
                 // redefine parent node of near nodes
                 rewireNearNodes(new_node, near_nodes);
 
-                auto cost_to_goal = new_node->state.distanceFrom(goal);
-                if(cost_to_goal < expand_dist_ && new_node->cost + cost_to_goal < terminate_search_cost_) {
-                    break;
+                if(constraint_->checkCollision(new_node->state, goal)) {
+                    auto cost_to_goal = new_node->state.distanceFrom(goal);
+                    if(cost_to_goal < expand_dist_ && new_node->cost + cost_to_goal < terminate_search_cost_) {
+                        break;
+                    }
                 }
             }
         }
@@ -111,25 +114,34 @@ namespace planner {
             return false;
         }
         else {
-            auto result_node = near_goal_nodes.front();
+            std::shared_ptr<Node> result_node;
+            auto min_cost = std::numeric_limits<double>::max();
             for(const auto& near_goal_node : near_goal_nodes) {
-                result_node = (near_goal_node->cost < result_node->cost) ? near_goal_node : result_node;
+                auto cost_to_goal = near_goal_node->state.distanceFrom(goal);
+                if(constraint_->checkCollision(goal, near_goal_node->state) && near_goal_node->cost + cost_to_goal < min_cost) {
+                    result_node = near_goal_node;
+                    min_cost    = near_goal_node->cost + cost_to_goal;
+                }
             }
-
-            result_cost_ = result_node->cost + result_node->state.distanceFrom(goal);
-            if(result_node->state != goal) {
-                result_.push_back(goal);
+            if(result_node == nullptr) {
+                return false;
             }
-
-            while(true) {
-                result_.insert(result_.begin(), result_node->state);
-                if(result_node->parent == nullptr) {
-                    break;
+            else {
+                result_cost_ = result_node->cost + result_node->state.distanceFrom(goal);
+                if(result_node->state != goal) {
+                    result_.push_back(goal);
                 }
 
-                result_node = result_node->parent;
+                while(true) {
+                    result_.insert(result_.begin(), result_node->state);
+                    if(result_node->parent == nullptr) {
+                        break;
+                    }
+
+                    result_node = result_node->parent;
+                }
+                return true;
             }
-            return true;
         }
     }
 }

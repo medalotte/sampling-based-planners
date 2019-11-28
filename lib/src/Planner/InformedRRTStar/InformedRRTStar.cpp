@@ -105,7 +105,8 @@ namespace planner {
             // add to list if new node meets constraint
             if(constraint_->checkCollision(nearest_node->state, new_node->state)) {
                 // find nodes that exist on certain domain
-                auto radius = R_ * std::pow((std::log(node_list_->getSize()) / node_list_->getSize()), 1.0 / constraint_->space.getDim());
+                auto nof_node   = node_list_->getSize();
+                auto radius     = std::min(expand_dist_, R_ * std::pow((std::log(nof_node) / nof_node), 1.0 / constraint_->space.getDim()));
                 auto near_nodes = node_list_->searchNBHD(new_node, radius);
 
                 // choose parent node of new node from near nodes
