@@ -26,7 +26,7 @@
 #define LIB_INCLUDE_PLANNER_H_
 
 #include <Constraint/PointCloudConstraint/PointCloudConstraint.h>
-#include <Constraint/SemanticSegmentConstraint/SemanticSegmentConstraint.h>
+#include <Constraint/GridConstraint/GridConstraint.h>
 #include <Planner/RRT/RRT.h>
 #include <Planner/RRTStar/RRTStar.h>
 #include <Planner/InformedRRTStar/InformedRRTStar.h>

@@ -82,7 +82,7 @@ int main() {
                             std::vector<pln::Bound> bounds{pln::Bound(0, world.cols), pln::Bound(0, world.rows)};
                             space.setBound(bounds);
 
-                            // A constraint based on image(semantic segment) use one dimension std::vector<pln::ConstraintType>,
+                            // A constraint based on image use one dimension std::vector<pln::ConstraintType>,
                             // and you should set each dimension size to std::vector<uint32_t>
                             std::vector<pln::ConstraintType> map(world.cols * world.rows,
                                                                  pln::ConstraintType::ENTAERABLE);
@@ -97,7 +97,7 @@ int main() {
                             std::vector<uint32_t> each_dim_size{(uint32_t)world.cols, (uint32_t)world.rows};
 
                             //-- apply constraint
-                            constraint = std::make_shared<pln::SemanticSegmentConstraint>(space, map, each_dim_size);
+                            constraint = std::make_shared<pln::GridConstraint>(space, map, each_dim_size);
 
                             //--- set terminate cost
                             terminate_search_cost = img_terminate_search_cost;

@@ -22,38 +22,38 @@
  *  SOFTWARE.
  */
 
-#include <Constraint/SemanticSegmentConstraint/SemanticSegmentConstraint.h>
+#include <Constraint/GridConstraint/GridConstraint.h>
 
 namespace planner {
-    SemanticSegmentConstraint::SemanticSegmentConstraint(const EuclideanSpace& space) :
+    GridConstraint::GridConstraint(const EuclideanSpace& space) :
         base::ConstraintBase(space) {
     }
 
-    SemanticSegmentConstraint::SemanticSegmentConstraint(const EuclideanSpace&              space,
+    GridConstraint::GridConstraint(const EuclideanSpace&              space,
                                                          const std::vector<ConstraintType>& constraint,
                                                          const std::vector<uint32_t>&       each_dim_size) :
         base::ConstraintBase(space) {
         set(constraint, each_dim_size);
     }
 
-    SemanticSegmentConstraint::~SemanticSegmentConstraint() {
+    GridConstraint::~GridConstraint() {
     }
 
-    void SemanticSegmentConstraint::set(const std::vector<ConstraintType>& constraint,
+    void GridConstraint::set(const std::vector<ConstraintType>& constraint,
                                         const std::vector<uint32_t>&       each_dim_size) {
         constraint_    = constraint;
         each_dim_size_ = each_dim_size;
     }
 
-    const std::vector<ConstraintType>& SemanticSegmentConstraint::getConstraintRef() const {
+    const std::vector<ConstraintType>& GridConstraint::getConstraintRef() const {
         return constraint_;
     }
 
-    const std::vector<uint32_t>& SemanticSegmentConstraint::getEachDimSizeRef() const {
+    const std::vector<uint32_t>& GridConstraint::getEachDimSizeRef() const {
         return each_dim_size_;
     }
 
-    bool SemanticSegmentConstraint::checkCollision(const State& src,
+    bool GridConstraint::checkCollision(const State& src,
                                                    const State& dst) const {
         if(src.getDim() != dst.getDim() || getDim() != src.getDim()) {
             throw std::invalid_argument("[" + std::string(__PRETTY_FUNCTION__) + "] " +
@@ -71,7 +71,7 @@ namespace planner {
         return true;
     }
 
-    ConstraintType SemanticSegmentConstraint::checkConstraintType(const State& state) const {
+    ConstraintType GridConstraint::checkConstraintType(const State& state) const {
         if(getDim() != state.getDim()) {
             throw std::invalid_argument("[" + std::string(__PRETTY_FUNCTION__) + "] " +
                                         "State dimension is invalid");

@@ -48,7 +48,7 @@ add_library(${PROJECT_NAME} SHARED
   ${PROJECT_SOURCE_DIR}/src/State/State.cpp
   ${PROJECT_SOURCE_DIR}/src/EuclideanSpace/EuclideanSpace.cpp
   ${PROJECT_SOURCE_DIR}/src/Constraint/ConstraintBase.cpp
-  ${PROJECT_SOURCE_DIR}/src/Constraint/SemanticSegmentConstraint/SemanticSegmentConstraint.cpp
+  ${PROJECT_SOURCE_DIR}/src/Constraint/GridConstraint/GridConstraint.cpp
   ${PROJECT_SOURCE_DIR}/src/Constraint/PointCloudConstraint/PointCloudConstraint.cpp
   ${PROJECT_SOURCE_DIR}/src/Sampler/Sampler.cpp
   ${PROJECT_SOURCE_DIR}/src/Node/Node.cpp

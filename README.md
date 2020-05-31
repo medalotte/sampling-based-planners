@@ -90,7 +90,7 @@ for(int yi = 0; yi < world.rows; yi++) {
 std::vector<uint32_t> each_dim_size{(uint32_t)world.cols, (uint32_t)world.rows};
 
 // definition of constraint using std::shared_ptr
-auto constraint = std::make_shared<pln::SemanticSegmentConstraint>(space, map, each_dim_size);
+auto constraint = std::make_shared<pln::GridConstraint>(space, map, each_dim_size);
 ```
 
 ### 4. Solve
