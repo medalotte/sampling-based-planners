@@ -19,7 +19,7 @@ If you would like to compile the example programs, add the following:
 The shared library (**libplanner.so**) can be build with following commands
 
 ``` sh
-$ git clone https://github.com/kyk0910/sampling-based-planners.git
+$ git clone https://github.com/medalotte/sampling-based-planners.git
 $ cd sampling-based-planners/lib
 $ mkdir build && cd build
 $ cmake ..
