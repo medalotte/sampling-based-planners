@@ -68,10 +68,16 @@ namespace planner {
 
         const std::vector<uint32_t>& getEachDimSizeRef() const;
 
+        State calcGridIdx(const State& state) const;
+
+        std::vector<std::vector<uint32_t>> calcLineIndices(State src_idx, State dst_idx) const;
+
         bool checkCollision(const State& src,
                             const State& dst) const override;
 
         ConstraintType checkConstraintType(const State& state) const override;
+
+        ConstraintType checkConstraintType(const std::vector<uint32_t>& idx) const;
 
     private:
         std::vector<ConstraintType> constraint_;
