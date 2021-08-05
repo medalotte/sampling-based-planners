@@ -123,7 +123,9 @@ namespace planner {
                 for(const auto& changed_cost_node : changed_cost_nodes) {
                     if(changed_cost_node->cost_to_goal <= goal_region_radius_) {
                         if(min_cost_node == nullptr || estimate_cost(changed_cost_node) < estimate_cost(min_cost_node)) {
-                            min_cost_node = changed_cost_node;
+                            if (constraint_->checkCollision(goal, changed_cost_node->state)) {
+                                min_cost_node = changed_cost_node;
+                            }
                         }
                     }
                 }
